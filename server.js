@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 
 const app = express();
+app.use(express.json()); // Add this line to parse JSON bodies
 const PORT = 2024;
 
 // Start the server
@@ -291,29 +292,64 @@ app.delete("/delete-event", (req, res) => {
     });
 });
 
-// Update event
 app.put("/update-event", (req, res) => {
-    const { recordid, doe, tos, venue, city } = req.body;
+    const { recordid,events, doe, tos, venue, city } = req.body;
 
-    // Validate required fields
-    if (!recordid || !doe || !tos || !venue || !city) {
-        return res.status(400).send("All fields are required.");
+    if (!recordid) {
+        return res.status(400).json({ error: "recordid is required." });
     }
 
-    // SQL query to update the event
+    // Build update fields dynamically
+    let fields = [];
+    let values = [];
+
+    if(events){
+        fields.push("events = ?");
+        values.push(events);
+    }
+
+    if (doe) {
+        fields.push("doe = ?");
+        values.push(doe);
+    }
+    if (tos) {
+        fields.push("tos = ?");
+        values.push(tos);
+    }
+    if (venue) {
+        fields.push("venue = ?");
+        values.push(venue);
+    }
+    if (city) {
+        fields.push("city = ?");
+        values.push(city);
+    }
+
+    if (fields.length === 0) {
+        return res.status(400).json({ error: "No fields to update." });
+    }
+
     const query = `
         UPDATE events
-        SET doe = ?, tos = ?, venue = ?, city = ?
+        SET ${fields.join(", ")}
         WHERE recordid = ?
     `;
-    mysql.query(query, [doe, tos, venue, city, recordid], (err) => {
+    values.push(recordid);
+
+    mysql.query(query, values, (err, result) => {
         if (err) {
-            res.status(500).send("Error updating event.");
-        } else {
-            res.send("Event updated successfully.");
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Error updating event." });
         }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Event not found." });
+        }
+
+        res.json({ message: "Event updated successfully." });
     });
 });
+
 
 // Update password
 app.get("/updatePwd", (req, res) => {
