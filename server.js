@@ -84,154 +84,139 @@ app.get("/influencer-dashboard", (req, res) => {
 // Profile submission
 app.post("/profile-submit", (req, res) => {
     if (!req.files || !req.files.picUpload) {
-        res.status(400).send("No file uploaded.");
-        return;
+        return res.status(400).json({ status: "error", message: "No file uploaded." });
     }
 
     const file = req.files.picUpload;
 
-    // Validate file type
     if (!file.mimetype.startsWith("image/")) {
-        res.status(400).send("Please upload an image file.");
-        return;
+        return res.status(400).json({ status: "error", message: "Please upload an image file." });
     }
 
-    // Generate unique file name
     const fileName = `${Date.now()}_${file.name}`;
     const uploadPath = path.join(__dirname, "public/uploads", fileName);
 
-    // Ensure uploads directory exists
     const uploadsDir = path.join(__dirname, "public/uploads");
     if (!fs.existsSync(uploadsDir)) {
         fs.mkdirSync(uploadsDir, { recursive: true });
     }
 
-    // Move the file to the uploads folder
     file.mv(uploadPath, (err) => {
         if (err) {
-            res.status(500).send(err.message);
-            return;
+            return res.status(500).json({ status: "error", message: err.message });
         }
 
         const {
-            emailid,
-            name,
-            gender,
-            dob,
-            address,
-            city,
-            contact,
-            field,
-            insta,
-            youtube,
-            otherinfo,
+            emailid, name, gender, dob, address, city,
+            contact, field, insta, youtube, otherinfo,
         } = req.body;
 
-        const query =
-            "INSERT INTO iprofile (emailid, name, gender, dob, address, city, contact, field, insta, youtube, otherinfo, picpath) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        mysql.query(
-            query,
-            [
-                emailid,
-                name,
-                gender,
-                dob,
-                address,
-                city,
-                contact,
-                field,
-                insta,
-                youtube,
-                otherinfo,
-                fileName,
-            ],
-            (err) => {
-                if (err) {
-                    res.status(500).send(err.message);
-                } else {
-                    res.send("Profile created successfully!");
-                }
+        const query = `
+            INSERT INTO iprofile (emailid, name, gender, dob, address, city, contact, field, insta, youtube, otherinfo, picpath)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        mysql.query(query, [
+            emailid, name, gender, dob, address, city,
+            contact, field, insta, youtube, otherinfo, fileName
+        ], (err) => {
+            if (err) {
+                return res.status(500).json({ status: "error", message: err.message });
             }
-        );
+            res.json({ status: "success", message: "Profile created successfully!" });
+        });
     });
 });
 
+// Influencer Profile Update
 app.post("/profile-update", (req, res) => {
     const {
-        emailid,
-        name,
-        gender,
-        dob,
-        address,
-        city,
-        contact,
-        field,
-        insta,
-        youtube,
-        otherinfo,
+        emailid, name, gender, dob, address, city,
+        contact, field, insta, youtube, otherinfo,
     } = req.body;
 
     let fileName = null;
 
+    const proceedUpdate = () => {
+        const query = `
+            UPDATE iprofile SET 
+                name = ?, gender = ?, dob = ?, address = ?, city = ?, contact = ?, 
+                field = ?, insta = ?, youtube = ?, otherinfo = ?
+                ${fileName ? ', picpath = ?' : ''}
+            WHERE emailid = ?
+        `;
+
+        const params = [
+            name, gender, dob, address, city, contact,
+            field, insta, youtube, otherinfo
+        ];
+
+        if (fileName) params.push(fileName);
+        params.push(emailid);
+
+        mysql.query(query, params, (err) => {
+            if (err) return res.status(500).json({ status: "error", message: err.message });
+            res.json({ status: "success", message: "Profile updated successfully!" });
+        });
+    };
+
     if (req.files && req.files.picUpload) {
         const file = req.files.picUpload;
-
-        // Validate file type
         if (!file.mimetype.startsWith("image/")) {
-            res.status(400).send("Please upload an image file.");
-            return;
+            return res.status(400).json({ status: "error", message: "Please upload an image file." });
         }
 
-        // Generate unique file name
         fileName = `${Date.now()}_${file.name}`;
         const uploadPath = path.join(__dirname, "public/uploads", fileName);
 
-        // Ensure uploads directory exists
         const uploadsDir = path.join(__dirname, "public/uploads");
         if (!fs.existsSync(uploadsDir)) {
             fs.mkdirSync(uploadsDir, { recursive: true });
         }
 
-        // Move the file to the uploads folder
         file.mv(uploadPath, (err) => {
-            if (err) {
-                res.status(500).send(err.message);
-                return;
-            }
+            if (err) return res.status(500).json({ status: "error", message: err.message });
+            proceedUpdate();
         });
+    } else {
+        proceedUpdate();
     }
+});
 
-    const query =
-        "UPDATE iprofile SET name = ?, gender = ?, dob = ?, address = ?, city = ?, contact = ?, field = ?, insta = ?, youtube = ?, otherinfo = ?" +
-        (fileName ? ", picpath = ?" : "") +
-        " WHERE emailid = ?";
+// Client Profile Submit
+app.post("/client-profile-submit", (req, res) => {
+    const { emailid, name, city, state, org, contact } = req.body;
 
-    const params = [
-        name,
-        gender,
-        dob,
-        address,
-        city,
-        contact,
-        field,
-        insta,
-        youtube,
-        otherinfo,
-    ];
+    const query = `
+        INSERT INTO cprofile (emailid, name, city, state, org, mobile)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
 
-    if (fileName) {
-        params.push(fileName);
-    }
-    params.push(emailid);
-
-    mysql.query(query, params, (err) => {
-        if (err) {
-            res.status(500).send(err.message);
-        } else {
-            res.send("Profile updated successfully!");
-        }
+    mysql.query(query, [emailid, name, city, state, org, contact], (err) => {
+        if (err) return res.status(500).json({ status: "error", message: err.message });
+        res.json({ status: "success", message: "Client profile created successfully!" });
     });
 });
+
+// Client Profile Update
+app.post("/client-profile-update", (req, res) => {
+    const { emailid, name, city, state, org, contact } = req.body;
+
+    const query = `
+        UPDATE cprofile 
+        SET name = ?, city = ?, state = ?, org = ?, mobile = ?
+        WHERE emailid = ?
+    `;
+
+    const params = [name, city, state, org, contact, emailid];
+
+    mysql.query(query, params, (err) => {
+        if (err) return res.status(500).json({ status: "error", message: err.message });
+        res.json({ status: "success", message: "Client profile updated successfully!" });
+    });
+});
+
+
 
 app.post("/event-submit", (req, res) => {
     const { email, eventTitle, eventDate, eventTime, city, venue } = req.body;

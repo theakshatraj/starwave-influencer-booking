@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="clientProfileApp">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Client Profile</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/client-Profile.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="script/client-Profile.js"></script>
+
+  
+  </head>
+  <body ng-controller="clientProfileCtrl">
+    <div class="profile-container">
+      <div class="profile-card">
+        <h1 class="page-title">Client Profile</h1>
+        <p class="page-subtitle">
+          Manage your account information and preferences
+        </p>
+        <!-- Success/Error Message Display -->
+        <div id="responseMsg" class="alert d-none" role="alert"></div>
+
+        <form
+          id="clientProfileForm"
+          name="clientProfileForm"
+          method="post"
+          enctype="multipart/form-data"
+          ng-submit="submitForm()"
+          novalidate
+        >
+          <div class="form-section">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="input-group readonly-indicator">
+                  <label for="emailid" class="form-label">Email Address</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="emailid"
+                    name="emailid"
+                    ng-model="client.emailid"
+                    readonly
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="input-group">
+                  <label for="name" class="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    ng-model="client.name"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="input-group">
+                  <label for="city" class="form-label">City</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    name="city"
+                    ng-model="client.city"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="input-group">
+                  <label for="state" class="form-label">State</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="state"
+                    name="state"
+                    ng-model="client.state"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="input-group">
+                  <label for="org" class="form-label"
+                    >Individual/Organization</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="org"
+                    name="org"
+                    ng-model="client.org"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group">
+                  <label for="contact" class="form-label">Contact Number</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="contact"
+                    name="contact"
+                    ng-model="client.contact"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-container">
+            <button
+              type="button"
+              class="btn-modern btn-submit"
+              ng-click="submitForm(true, 'submit')"
+            >
+              Submit
+            </button>
+            <button
+              type="button"
+              class="btn-modern btn-update"
+              ng-click="submitForm(true, 'update')"
+            >
+              Update
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
