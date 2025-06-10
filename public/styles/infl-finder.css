@@ -1,0 +1,499 @@
+:root {
+    --primary-color: #FF6B35;
+    --secondary-color: #FFB800;
+    --accent-color: #FFA726;
+    --text-dark: #2C3E50;
+    --text-light: #7F8C8D;
+    --bg-light: #F8F9FA;
+    --bg-white: #FFFFFF;
+    --border-color: #E9ECEF;
+    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+* {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+.page-header {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+    position: relative;
+    display: inline-block;
+}
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+}
+
+.search-container {
+    background: var(--bg-white);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.form-control, .form-select {
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: var(--bg-white);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.15);
+    outline: none;
+}
+
+.btn-search {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: white;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-search:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    background: linear-gradient(135deg, #e55a2b, #e6a500);
+}
+
+.btn-search:active {
+    transform: translateY(0);
+}
+
+.influencer-card {
+    background: var(--bg-white);
+    border-radius: 20px;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    height: 100%;
+}
+
+.influencer-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: none;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+}
+
+.profile-image {
+    width: 120px;
+    height: 120px;
+    border: 4px solid var(--bg-white);
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+}
+
+.influencer-card:hover .profile-image {
+    transform: scale(1.05);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.card-text {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.card-text strong {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+/* Updated card-footer for button layout */
+.card-footer {
+    background: transparent;
+    border: none;
+    padding: 1rem 1.5rem 1.5rem;
+    display: flex; /* Added for horizontal layout */
+    gap: 10px; /* Added spacing between buttons */
+    justify-content: space-between; /* Distribute space */
+}
+
+/* Ensure buttons inside card-footer share space */
+.card-footer .btn {
+    flex: 1;
+}
+
+.btn-details {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border: none;
+    border-radius: 25px;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: white;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-details:hover {
+    background: linear-gradient(135deg, #e55a2b, #ff9800);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+}
+
+/* New .btn-save styles */
+.btn-save {
+    background-color: #e9ecef; /* Light grey background */
+    color: #495057; /* Darker grey text */
+    border: 1px solid #ced4da; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 8px 16px; /* Padding */
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.875rem; /* Smaller font size */
+    text-align: center; /* Ensure text is centered if flex item */
+}
+
+.btn-save:hover {
+    background-color: #dee2e6; /* Slightly darker grey on hover */
+    color: #343a40; /* Even darker text on hover */
+    transform: translateY(-1px); /* Slight lift effect */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow on hover */
+}
+
+.btn-save:focus {
+    box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.25); /* Focus outline */
+}
+
+.btn-save.saved {
+    background-color: #d1ecf1; /* Light blue/green for saved state */
+    color: #0c5460; /* Dark blue/green text */
+    border-color: #bee5eb; /* Matching border color */
+}
+
+.btn-save.saving {
+    opacity: 0.7;
+    pointer-events: none; /* Disable clicks while saving */
+}
+
+.modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-radius: 20px 20px 0 0;
+    padding: 1.5rem 2rem;
+}
+
+.modal-title {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-profile-image {
+    width: 180px;
+    height: 180px;
+    border: 4px solid var(--bg-white);
+    box-shadow: var(--shadow-card);
+}
+
+.modal-info p {
+    margin-bottom: 0.75rem;
+}
+
+.modal-info strong {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.social-links {
+    margin-top: 1rem;
+}
+
+.social-btn {
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.social-btn.instagram {
+    background: linear-gradient(135deg, #E4405F, #C13584);
+    border: none;
+    color: white;
+}
+
+.social-btn.instagram:hover {
+    background: linear-gradient(135deg, #d63384, #a02d6b);
+    transform: translateY(-2px);
+}
+
+.social-btn.youtube {
+    background: linear-gradient(135deg, #FF0000, #CC0000);
+    border: none;
+    color: white;
+}
+
+.social-btn.youtube:hover {
+    background: linear-gradient(135deg, #e60000, #b30000);
+    transform: translateY(-2px);
+}
+
+.modal-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-contact {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    border-radius: 25px;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-contact:hover {
+    background: linear-gradient(135deg, #e55a2b, #e6a500);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    border: none;
+    border-radius: 25px;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.bio-section {
+    background: var(--bg-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.bio-section h6 {
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Toast notification styles */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1055; /* Higher than Bootstrap modals */
+}
+
+.toast {
+    min-width: 300px;
+    background-color: var(--bg-white); /* White background for toast */
+    border: 1px solid var(--border-color);
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: var(--shadow-light); /* Soft shadow */
+    padding: 15px;
+    margin-bottom: 10px; /* Space between multiple toasts */
+    color: var(--text-dark); /* Dark text for readability */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.toast.show {
+    animation: slideIn 0.5s forwards;
+}
+
+.toast.hide {
+    animation: slideOut 0.5s forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.toast-header {
+    font-weight: 600;
+    margin-right: auto; /* Pushes close button to the right */
+}
+
+.toast-body {
+    font-size: 0.9rem;
+}
+
+.toast-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--text-light);
+    cursor: pointer;
+    margin-left: 10px;
+    transition: color 0.3s ease;
+}
+
+.toast-close-btn:hover {
+    color: var(--text-dark);
+}
+
+/* Specific toast types for success/error */
+.toast.success {
+    border-left: 5px solid #28a745; /* Green border */
+}
+
+.toast.error {
+    border-left: 5px solid #dc3545; /* Red border */
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-light);
+}
+
+.no-results i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .search-container {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .btn-search {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .profile-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .modal-profile-image {
+        width: 150px;
+        height: 150px;
+    }
+    .card-footer {
+        flex-direction: column; /* Stack buttons vertically on small screens */
+        align-items: center;
+    }
+    .card-footer .btn {
+        width: 100%; /* Make buttons full width */
+        margin-bottom: 10px; /* Add space between stacked buttons */
+    }
+    .card-footer .btn:last-child {
+        margin-bottom: 0; /* No margin after the last button */
+    }
+    .toast-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+    }
+}

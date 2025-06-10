@@ -457,6 +457,168 @@ app.get("/search-influencers", (req, res) => {
     });
 });
 
+app.post('/api/save-influencer', (req, res) => {
+    const { cemail, iemail } = req.body;
+    
+    // Validate input
+    if (!cemail || !iemail) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Client email and influencer email are required.'
+        });
+    }
+    
+    // Check if influencer exists
+    const checkInfluencerQuery = 'SELECT emailid FROM iprofile WHERE emailid = ?';
+    mysql.query(checkInfluencerQuery, [iemail], (err, results) => {
+        if (err) {
+            return res.status(500).json({
+                status: 'error',
+                message: 'Database error while checking influencer.',
+                details: err.message
+            });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Influencer not found.'
+            });
+        }
+        
+        // Insert into savedinfluencers table
+        const insertQuery = 'INSERT INTO savedinfluencers (cemail, iemail) VALUES (?, ?)';
+        mysql.query(insertQuery, [cemail, iemail], (err, result) => {
+            if (err) {
+                // Check if it's a duplicate entry error
+                if (err.code === 'ER_DUP_ENTRY') {
+                    return res.status(200).json({
+                        status: 'info',
+                        message: 'Influencer already saved.'
+                    });
+                }
+                return res.status(500).json({
+                    status: 'error',
+                    message: 'Failed to save influencer.',
+                    details: err.message
+                });
+            }
+            
+            res.status(201).json({
+                status: 'success',
+                message: 'Influencer saved successfully.'
+            });
+        });
+    });
+});
+
+// GET /api/get-saved-influencers - Get all saved influencers for a client
+app.get('/api/get-saved-influencers', (req, res) => {
+    const { cemail } = req.query;
+    
+    if (!cemail) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Client email is required.'
+        });
+    }
+    
+    const query = `
+        SELECT 
+            i.emailid,
+            i.name,
+            i.gender,
+            i.dob,
+            i.address,
+            i.city,
+            i.contact,
+            i.field,
+            i.insta,
+            i.youtube,
+            i.otherinfo,
+            i.picpath as pic,
+            s.saved_at
+        FROM savedinfluencers s
+        JOIN iprofile i ON s.iemail = i.emailid
+        WHERE s.cemail = ?
+        ORDER BY s.saved_at DESC
+    `;
+    
+    mysql.query(query, [cemail], (err, results) => {
+        if (err) {
+            return res.status(500).json({
+                status: 'error',
+                message: 'Failed to retrieve saved influencers.',
+                details: err.message
+            });
+        }
+        
+        res.json(results);
+    });
+});
+
+// DELETE /api/remove-saved-influencer - Remove a saved influencer
+app.delete('/api/remove-saved-influencer', (req, res) => {
+    const { cemail, iemail } = req.body;
+    
+    if (!cemail || !iemail) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Client email and influencer email are required.'
+        });
+    }
+    
+    const deleteQuery = 'DELETE FROM savedinfluencers WHERE cemail = ? AND iemail = ?';
+    mysql.query(deleteQuery, [cemail, iemail], (err, result) => {
+        if (err) {
+            return res.status(500).json({
+                status: 'error',
+                message: 'Failed to remove influencer.',
+                details: err.message
+            });
+        }
+        
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                status: 'info',
+                message: 'Influencer not found in saved list.'
+            });
+        }
+        
+        res.json({
+            status: 'success',
+            message: 'Influencer removed successfully.'
+        });
+    });
+});
+
+// Additional endpoint to check if an influencer is saved
+app.get('/api/check-saved-influencer', (req, res) => {
+    const { cemail, iemail } = req.query;
+    
+    if (!cemail || !iemail) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Client email and influencer email are required.'
+        });
+    }
+    
+    const query = 'SELECT COUNT(*) as count FROM savedinfluencers WHERE cemail = ? AND iemail = ?';
+    mysql.query(query, [cemail, iemail], (err, results) => {
+        if (err) {
+            return res.status(500).json({
+                status: 'error',
+                message: 'Database error.',
+                details: err.message
+            });
+        }
+        
+        res.json({
+            saved: results[0].count > 0
+        });
+    });
+});
+
 // Block user
 app.get("/block-process", (req, res) => {
     const { email } = req.query;
