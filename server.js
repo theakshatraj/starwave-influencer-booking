@@ -135,31 +135,98 @@ app.post("/profile-update", (req, res) => {
         contact, field, insta, youtube, otherinfo,
     } = req.body;
 
+    if (!emailid) {
+        return res.status(400).json({ status: "error", message: "Email ID is required for update." });
+    }
+
     let fileName = null;
 
     const proceedUpdate = () => {
-        const query = `
-            UPDATE iprofile SET 
-                name = ?, gender = ?, dob = ?, address = ?, city = ?, contact = ?, 
-                field = ?, insta = ?, youtube = ?, otherinfo = ?
-                ${fileName ? ', picpath = ?' : ''}
-            WHERE emailid = ?
-        `;
+        // Build dynamic query based on provided fields
+        const fieldsToUpdate = [];
+        const params = [];
 
-        const params = [
-            name, gender, dob, address, city, contact,
-            field, insta, youtube, otherinfo
-        ];
+        // Only include fields that have values (not empty strings, null, or undefined)
+        if (name && name.trim() !== '') {
+            fieldsToUpdate.push('name = ?');
+            params.push(name.trim());
+        }
+        if (gender && gender.trim() !== '') {
+            fieldsToUpdate.push('gender = ?');
+            params.push(gender.trim());
+        }
+        if (dob && dob.trim() !== '') {
+            fieldsToUpdate.push('dob = ?');
+            params.push(dob.trim());
+        }
+        if (address && address.trim() !== '') {
+            fieldsToUpdate.push('address = ?');
+            params.push(address.trim());
+        }
+        if (city && city.trim() !== '') {
+            fieldsToUpdate.push('city = ?');
+            params.push(city.trim());
+        }
+        if (contact && contact.trim() !== '') {
+            fieldsToUpdate.push('contact = ?');
+            params.push(contact.trim());
+        }
+        if (field && field !== '') {
+            fieldsToUpdate.push('field = ?');
+            params.push(field);
+        }
+        if (insta && insta.trim() !== '') {
+            fieldsToUpdate.push('insta = ?');
+            params.push(insta.trim());
+        }
+        if (youtube && youtube.trim() !== '') {
+            fieldsToUpdate.push('youtube = ?');
+            params.push(youtube.trim());
+        }
+        if (otherinfo && otherinfo.trim() !== '') {
+            fieldsToUpdate.push('otherinfo = ?');
+            params.push(otherinfo.trim());
+        }
+        if (fileName) {
+            fieldsToUpdate.push('picpath = ?');
+            params.push(fileName);
+        }
 
-        if (fileName) params.push(fileName);
+        // If no fields to update, return error
+        if (fieldsToUpdate.length === 0) {
+            return res.status(400).json({ 
+                status: "error", 
+                message: "No valid fields provided for update." 
+            });
+        }
+
+        // Build the final query
+        const query = `UPDATE iprofile SET ${fieldsToUpdate.join(', ')} WHERE emailid = ?`;
         params.push(emailid);
 
-        mysql.query(query, params, (err) => {
-            if (err) return res.status(500).json({ status: "error", message: err.message });
-            res.json({ status: "success", message: "Profile updated successfully!" });
+        mysql.query(query, params, (err, result) => {
+            if (err) {
+                console.error('Database update error:', err);
+                return res.status(500).json({ status: "error", message: err.message });
+            }
+            
+            // Check if any rows were affected
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ 
+                    status: "error", 
+                    message: "No profile found with the provided email ID." 
+                });
+            }
+
+            res.json({ 
+                status: "success", 
+                message: "Profile updated successfully!",
+                picpath: fileName || undefined // Return new pic path if uploaded
+            });
         });
     };
 
+    // Handle file upload if present
     if (req.files && req.files.picUpload) {
         const file = req.files.picUpload;
         if (!file.mimetype.startsWith("image/")) {
@@ -175,14 +242,16 @@ app.post("/profile-update", (req, res) => {
         }
 
         file.mv(uploadPath, (err) => {
-            if (err) return res.status(500).json({ status: "error", message: err.message });
+            if (err) {
+                console.error('File upload error:', err);
+                return res.status(500).json({ status: "error", message: err.message });
+            }
             proceedUpdate();
         });
     } else {
         proceedUpdate();
     }
 });
-
 // Client Profile Submit
 app.post("/client-profile-submit", (req, res) => {
     const { emailid, name, city, state, org, contact } = req.body;
@@ -420,6 +489,43 @@ app.get("/update-cities", function (req, resp) {
         } else {
             resp.send(resultJsonAry);
         }
+    });
+});
+
+app.get('/api/client/dashboard-metrics', (req, res) => {
+    const clientEmail = req.query.clientEmail;
+
+    if (!clientEmail) {
+        return res.status(400).json({ status: "error", message: "Client email is required." });
+    }
+
+    // Using a single query to fetch client name and count saved influencers
+    const query = `
+        SELECT
+            (SELECT name FROM cprofile WHERE emailid = ?) AS clientName,
+            (SELECT COUNT(*) FROM savedinfluencers WHERE cemail = ?) AS savedInfluencerCount
+    `;
+
+    mysql.query(query, [clientEmail, clientEmail], (err, results) => {
+        if (err) {
+            console.error("Error fetching dashboard metrics from DB:", err);
+            return res.status(500).json({ status: "error", message: "Internal server error: Could not fetch dashboard metrics." });
+        }
+
+        // The result will be an array with one object containing the subquery results
+        const data = results[0];
+        const clientName = data.clientName || "Client"; // Default if no client profile
+        const savedInfluencerCount = data.savedInfluencerCount || 0;
+
+        // Active Collaborations (Placeholder as requested)
+        const activeCampaigns = 0;
+
+        res.status(200).json({
+            clientName: clientName,
+            savedInfluencerCount: savedInfluencerCount,
+            activeCampaigns: activeCampaigns,
+            message: "Dashboard metrics fetched successfully."
+        });
     });
 });
 

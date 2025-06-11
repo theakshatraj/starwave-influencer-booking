@@ -4,118 +4,142 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Event Management</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons for modern icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS for Theming -->
+    <link rel="stylesheet" href="styles/event-manager.css">
 </head>
 <body ng-controller="eventController">
+    <div class="page-header-container">
+        <h1 class="page-title">Event Management</h1>
+    </div>
+
     <div class="container mt-5">
-        <h2 class="text-center">Event Management</h2>
-        <div class="mb-3">
-            <input
-                type="email"
-                class="form-control"
-                id="emailInput"
-                ng-model="userEmail"
-                placeholder="Your email"
-            />
-        </div>
-        <div class="d-flex gap-3">
-            <button class="btn btn-primary" ng-click="fetchEvents('upcoming')">
-                Fetch Upcoming Events
-            </button>
-            <button class="btn btn-secondary" ng-click="fetchEvents('past')">
-                Fetch Past Events
-            </button>
-        </div>
-        <div class="mt-4">
-            <table class="table table-bordered" ng-if="events && events.length > 0">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Venue</th>
-                        <th>City</th>
-                        <th ng-if="type === 'upcoming'">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="event in events">
-                        <td>{{ event.events }}</td>
-                        <td>{{ event.doe | date:'yyyy-MM-dd' }}</td>
-                        <td>{{ event.tos }}</td>
-                        <td>{{ event.venue }}</td>
-                        <td>{{ event.city }}</td>
-                        <td ng-if="type === 'upcoming'">
-                            <button
-                                class="btn btn-warning btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#updateEventModal"
-                                ng-click="setUpdateEvent(event)"
-                            >
-                                Update
-                            </button>
-                            <button class="btn btn-danger btn-sm" ng-click="deleteEvent(event.recordid)">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <p class="text-center" ng-if="events && events.length === 0">
-                {{ type === 'upcoming' ? 'No upcoming events.' : 'No past events.' }}
-            </p>
+        <div class="content-container">
+            <h4 class="text-center mb-4 text-dark-emphasis">Logged in as: <span class="text-primary-emphasis font-weight-bold">{{ userEmail }}</span></h4>
+            <div class="mb-3">
+                <label for="emailInput" class="form-label">Client Email</label>
+                <input
+                    type="email"
+                    class="form-control"
+                    id="emailInput"
+                    ng-model="userEmail"
+                    placeholder="Your email"
+                    readonly
+                />
+            </div>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <button class="btn btn-themed-primary" ng-click="fetchEvents('upcoming')">
+                    <i class="bi bi-calendar-check me-2"></i>Fetch Upcoming Events
+                </button>
+                <button class="btn btn-themed-secondary" ng-click="fetchEvents('past')">
+                    <i class="bi bi-calendar-x me-2"></i>Fetch Past Events
+                </button>
+            </div>
+            <div class="mt-4 themed-table">
+                <table class="table" ng-if="events && events.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Venue</th>
+                            <th>City</th>
+                            <th ng-if="type === 'upcoming'">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="event in events">
+                            <td>{{ event.events }}</td>
+                            <td>{{ event.doe | date:'yyyy-MM-dd' }}</td>
+                            <td>{{ event.tos }}</td>
+                            <td>{{ event.venue }}</td>
+                            <td>{{ event.city }}</td>
+                            <td ng-if="type === 'upcoming'">
+                                <button
+                                    class="btn btn-themed-secondary btn-sm me-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#updateEventModal"
+                                    ng-click="setUpdateEvent(event)"
+                                >
+                                    <i class="bi bi-pencil-square"></i> Update
+                                </button>
+                                <button class="btn btn-danger btn-sm" ng-click="deleteEvent(event.recordid)">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="text-center p-4 text-secondary" ng-if="!events || events.length === 0">
+                    <i class="bi bi-info-circle me-2"></i>
+                    {{ type === 'upcoming' ? 'No upcoming events to display.' : 'No past events to display.' }}
+                </p>
+            </div>
         </div>
     </div>
 
- <!-- Update Event Modal -->
-<div class="modal fade" id="updateEventModal" tabindex="-1" aria-labelledby="updateEventModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content" ng-if="selectedEvent">
-      <div class="modal-header">
-        <h5 class="modal-title" id="updateEventModalLabel">Update Event</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form novalidate>
-          <div class="mb-3">
-            <label for="eventTitle" class="form-label">Title</label>
-            <input type="text" class="form-control" id="eventTitle" ng-model="selectedEvent.events" required />
-            <div class="text-danger" ng-show="!selectedEvent.events">Title is required.</div>
-          </div>
-          <div class="mb-3">
-            <label for="eventDate" class="form-label">Date</label>
-            <input type="date" class="form-control" id="eventDate" ng-model="selectedEvent.formattedDate" required />
-            <div class="text-danger" ng-show="!selectedEvent.formattedDate">Date is required.</div>
-          </div>
-          <div class="mb-3">
-            <label for="eventTime" class="form-label">Time</label>
-            <input type="time" class="form-control" id="eventTime" ng-model="selectedEvent.formattedTime" required />
-            <div class="text-danger" ng-show="!selectedEvent.formattedTime">Time is required.</div>
-          </div>
-          <div class="mb-3">
-            <label for="eventVenue" class="form-label">Venue</label>
-            <input type="text" class="form-control" id="eventVenue" ng-model="selectedEvent.venue" required />
-            <div class="text-danger" ng-show="!selectedEvent.venue">Venue is required.</div>
-          </div>
-          <div class="mb-3">
-            <label for="eventCity" class="form-label">City</label>
-            <input type="text" class="form-control" id="eventCity" ng-model="selectedEvent.city" required />
-            <div class="text-danger" ng-show="!selectedEvent.city">City is required.</div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" ng-click="updateEvent()">Save Changes</button>
-      </div>
+    <!-- Update Event Modal -->
+    <div class="modal fade" id="updateEventModal" tabindex="-1" aria-labelledby="updateEventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content modal-content-themed" ng-if="selectedEvent">
+                <div class="modal-header modal-header-themed">
+                    <h5 class="modal-title modal-title-themed" id="updateEventModalLabel">Update Event</h5>
+                    <button type="button" class="btn-close btn-close-themed" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body modal-body-themed">
+                    <form novalidate>
+                        <div class="mb-3">
+                            <label for="eventTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="eventTitle" ng-model="selectedEvent.events" required />
+                            <div class="text-danger" ng-show="!selectedEvent.events && modalFormSubmitted">Title is required.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventDate" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="eventDate" ng-model="selectedEvent.formattedDate" required />
+                            <div class="text-danger" ng-show="!selectedEvent.formattedDate && modalFormSubmitted">Date is required.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventTime" class="form-label">Time</label>
+                            <input type="time" class="form-control" id="eventTime" ng-model="selectedEvent.formattedTime" required />
+                            <div class="text-danger" ng-show="!selectedEvent.formattedTime && modalFormSubmitted">Time is required.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventVenue" class="form-label">Venue</label>
+                            <input type="text" class="form-control" id="eventVenue" ng-model="selectedEvent.venue" required />
+                            <div class="text-danger" ng-show="!selectedEvent.venue && modalFormSubmitted">Venue is required.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventCity" class="form-label">City</label>
+                            <input type="text" class="form-control" id="eventCity" ng-model="selectedEvent.city" required />
+                            <div class="text-danger" ng-show="!selectedEvent.city && modalFormSubmitted">City is required.</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer modal-footer-themed">
+                    <button type="button" class="btn btn-themed-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2"></i>Close
+                    </button>
+                    <button type="button" class="btn btn-themed-primary" ng-click="updateEvent()">
+                        <i class="bi bi-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
+    <!-- Toast Container for notifications -->
+    <div class="toast-container"></div>
 
+    <!-- Bootstrap JS (bundle includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AngularJS Core -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <!-- Your existing event-manager.js -->
     <script src="script/event-manager.js"></script>
 </body>
 </html>

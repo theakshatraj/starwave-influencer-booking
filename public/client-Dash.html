@@ -4,413 +4,173 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Dashboard - StarWave</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles/client-Dash.css"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="styles/client-Dash.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
-  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="script/client-Dash.js"></script> 
 </head>
 <body ng-app="clientApp" ng-controller="ClientController">
-    <!-- Top Navigation -->
-    <nav class="navbar navbar-expand-lg top-navbar">
-      <div class="navbar-container d-flex align-items-center">
-        <a class="navbar-brand" href="client-Dash.html">StarWave</a>
+    <nav class="navbar navbar-expand-lg influencer-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="client-Dash.html">StarWave</a>
 
-        <div class="navbar-nav">
-          <a class="nav-link" href="client-Profile.html">
-            <i class="fas fa-user me-2"></i>Profile
-          </a>
-          <a class="nav-link" href="infl-finder.html">
-            <i class="fas fa-search me-2"></i>Influencer Finder
-          </a>
-          <a class="nav-link" href="saved-influ.html">
-            <i class="fas fa-bookmark me-2"></i>Saved Influencers
-          </a>
-          <a
-            class="nav-link"
-            href="#"
-            data-bs-toggle="modal"
-            data-bs-target="#settingsModal"
-          >
-            <i class="fas fa-cog me-2"></i>Settings
-          </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-          <a class="logout-btn" href="#" ng-click="logout()">
-            <i class="fas fa-sign-out-alt me-2"></i>Logout
-          </a>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="client-Profile.html">
+                            <i class="fas fa-user"></i>Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="infl-finder.html">
+                            <i class="fas fa-search"></i>Influencer Finder
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="saved-influ.html">
+                            <i class="fas fa-bookmark"></i>Saved Influencers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                            <i class="fas fa-cog"></i>Settings
+                        </a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <a class="logout-btn" href="#" ng-click="logout()">
+                            <i class="fas fa-sign-out-alt"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-      </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="main-container">
-      <div class="content-wrapper">
-        <div class="container-fluid">
-          <!-- Welcome Section -->
-          <div class="welcome-section">
-            <h1 class="welcome-title">Welcome back!</h1>
-            <p class="welcome-subtitle">
-              {{clientEmail || 'client@example.com'}}
-            </p>
-          </div>
-
-          <!-- Dashboard Content -->
-          <div class="dashboard-content">
-            <h2 class="mb-4">Dashboard Overview</h2>
-
-            <!-- Stats Cards -->
-            <div class="row mb-5">
-              <div class="col-md-3 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                  <div class="card-body text-center">
-                    <div
-                      class="d-flex align-items-center justify-content-center mb-3"
-                    >
-                      <div
-                        class="rounded-circle p-3"
-                        style="
-                          background: linear-gradient(135deg, #4a3c5a, #6b4c7a);
-                          color: white;
-                        "
-                      >
-                        <i class="fas fa-users fa-2x"></i>
-                      </div>
-                    </div>
-                    <h3 class="h4 mb-2">1,247</h3>
-                    <p class="text-muted mb-0">Available Influencers</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                  <div class="card-body text-center">
-                    <div
-                      class="d-flex align-items-center justify-content-center mb-3"
-                    >
-                      <div
-                        class="rounded-circle p-3"
-                        style="background: #f4b942; color: #2c2c2c"
-                      >
-                        <i class="fas fa-bookmark fa-2x"></i>
-                      </div>
-                    </div>
-                    <h3 class="h4 mb-2">{{savedCount || 0}}</h3>
-                    <p class="text-muted mb-0">Saved Influencers</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                  <div class="card-body text-center">
-                    <div
-                      class="d-flex align-items-center justify-content-center mb-3"
-                    >
-                      <div
-                        class="rounded-circle p-3"
-                        style="background: #28a745; color: white"
-                      >
-                        <i class="fas fa-handshake fa-2x"></i>
-                      </div>
-                    </div>
-                    <h3 class="h4 mb-2">{{activeCollaborations || 0}}</h3>
-                    <p class="text-muted mb-0">Active Collaborations</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                  <div class="card-body text-center">
-                    <div
-                      class="d-flex align-items-center justify-content-center mb-3"
-                    >
-                      <div
-                        class="rounded-circle p-3"
-                        style="background: #17a2b8; color: white"
-                      >
-                        <i class="fas fa-chart-line fa-2x"></i>
-                      </div>
-                    </div>
-                    <h3 class="h4 mb-2">{{totalReach || '2.5M'}}</h3>
-                    <p class="text-muted mb-0">Total Reach</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="row mb-5">
-              <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm hover-card">
-                  <div class="card-body text-center p-4">
-                    <div class="mb-3">
-                      <i
-                        class="fas fa-search fa-3x"
-                        style="color: var(--dark-purple)"
-                      ></i>
-                    </div>
-                    <h5 class="card-title mb-3">Find Influencers</h5>
-                    <p class="card-text text-muted mb-4">
-                      Discover and connect with top influencers in your niche
-                      using our advanced search filters.
-                    </p>
-                    <a href="infl-finder.html" class="btn btn-primary px-4"
-                      >Start Searching</a
-                    >
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm hover-card">
-                  <div class="card-body text-center p-4">
-                    <div class="mb-3">
-                      <i
-                        class="fas fa-bookmark fa-3x"
-                        style="color: #f4b942"
-                      ></i>
-                    </div>
-                    <h5 class="card-title mb-3">Saved Influencers</h5>
-                    <p class="card-text text-muted mb-4">
-                      Manage your collection of saved influencers and track your
-                      favorite creators for future campaigns.
-                    </p>
-                    <a
-                      href="saved-influ.html"
-                      class="btn btn-primary px-4"
-                      >View Saved</a
-                    >
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm hover-card">
-                  <div class="card-body text-center p-4">
-                    <div class="mb-3">
-                      <i
-                        class="fas fa-user-circle fa-3x"
-                        style="color: #28a745"
-                      ></i>
-                    </div>
-                    <h5 class="card-title mb-3">Your Profile</h5>
-                    <p class="card-text text-muted mb-4">
-                      Update your profile information, preferences, and company
-                      details to get better matches.
-                    </p>
-                    <a href="client-Profile.html" class="btn btn-primary px-4"
-                      >Edit Profile</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="row">
-              <div class="col-md-8 mb-4">
-                <div class="card border-0 shadow-sm">
-                  <div class="card-header bg-white border-0 pb-0">
-                    <h5 class="card-title mb-0">Recent Activity</h5>
-                  </div>
-                  <div class="card-body">
-                    <div
-                      class="d-flex align-items-center mb-3 pb-3 border-bottom"
-                    >
-                      <div class="rounded-circle bg-light p-2 me-3">
-                        <i class="fas fa-search text-primary"></i>
-                      </div>
-                      <div class="flex-grow-1">
-                        <p class="mb-1">
-                          You searched for "Fashion Influencers in Mumbai"
-                        </p>
-                        <small class="text-muted">2 hours ago</small>
-                      </div>
-                    </div>
-                    <div
-                      class="d-flex align-items-center mb-3 pb-3 border-bottom"
-                    >
-                      <div class="rounded-circle bg-light p-2 me-3">
-                        <i class="fas fa-bookmark text-warning"></i>
-                      </div>
-                      <div class="flex-grow-1">
-                        <p class="mb-1">
-                          You saved 3 new influencers to your list
-                        </p>
-                        <small class="text-muted">1 day ago</small>
-                      </div>
-                    </div>
-                    <div
-                      class="d-flex align-items-center mb-3 pb-3 border-bottom"
-                    >
-                      <div class="rounded-circle bg-light p-2 me-3">
-                        <i class="fas fa-user-edit text-success"></i>
-                      </div>
-                      <div class="flex-grow-1">
-                        <p class="mb-1">You updated your profile information</p>
-                        <small class="text-muted">3 days ago</small>
-                      </div>
-                    </div>
-                    <div class="d-flex align-items-center">
-                      <div class="rounded-circle bg-light p-2 me-3">
-                        <i class="fas fa-handshake text-info"></i>
-                      </div>
-                      <div class="flex-grow-1">
-                        <p class="mb-1">
-                          You started a collaboration with @fashionista_maya
-                        </p>
-                        <small class="text-muted">1 week ago</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4 mb-4">
-                <div class="card border-0 shadow-sm">
-                  <div class="card-header bg-white border-0 pb-0">
-                    <h5 class="card-title mb-0">Quick Tips</h5>
-                  </div>
-                  <div class="card-body">
-                    <div class="mb-3">
-                      <h6 class="text-primary mb-2">💡 Pro Tip</h6>
-                      <p class="small text-muted mb-0">
-                        Use detailed search filters to find influencers that
-                        perfectly match your brand's values and target audience.
-                      </p>
-                    </div>
-                    <hr />
-                    <div class="mb-3">
-                      <h6 class="text-success mb-2">🎯 Best Practice</h6>
-                      <p class="small text-muted mb-0">
-                        Save influencers to organize them into different
-                        campaign categories for better management.
-                      </p>
-                    </div>
-                    <hr />
-                    <div>
-                      <h6 class="text-warning mb-2">📊 Analytics</h6>
-                      <p class="small text-muted mb-0">
-                        Track your collaboration performance to understand which
-                        influencers drive the best ROI.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div class="dashboard-main">
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome back, {{clientName || 'Client'}}!</h1>
+            <p class="welcome-subtitle">Your gateway to powerful influencer marketing campaigns.</p>
         </div>
-      </div>
 
-      <footer class="footer">
+        <div class="dashboard-content dashboard-grid">
+            <div class="dashboard-card">
+                <div class="icon"><i class="fas fa-users"></i></div>
+                <h3>1,247+</h3>
+                <p>Available Influencers</p>
+            </div>
+            <a href="saved-influ.html" class="dashboard-card">
+                <div class="icon"><i class="fas fa-bookmark"></i></div>
+                <h3>{{savedInfluencerCount || 0}}</h3>
+                <p>Saved Influencers</p>
+            </a>
+            <div class="dashboard-card">
+                <div class="icon"><i class="fas fa-handshake"></i></div>
+                <h3>{{activeCampaigns || 0}}</h3>
+                <p>Active Collaborations</p>
+            </div>
+
+            <a href="infl-finder.html" class="dashboard-card">
+                <div class="icon"><i class="fas fa-search"></i></div>
+                <h5>Find Influencers</h5>
+                <p>Discover and connect with top influencers in your niche using our advanced search filters.</p>
+                <span class="btn btn-primary px-4">Start Searching</span>
+            </a>
+            <a href="saved-influ.html" class="dashboard-card">
+                <div class="icon"><i class="fas fa-bookmark"></i></div>
+                <h5>Manage Saved Influencers</h5>
+                <p>Access your curated list of favorite creators and organize them for upcoming campaigns.</p>
+                <span class="btn btn-primary px-4">View Saved</span>
+            </a>
+            <a href="client-Profile.html" class="dashboard-card">
+                <div class="icon"><i class="fas fa-user-circle"></i></div>
+                <h5>Edit Your Profile</h5>
+                <p>Update your company details, preferences, and contact information for better matches.</p>
+                <span class="btn btn-primary px-4">Go to Profile</span>
+            </a>
+            
+        </div>
+    </div>
+
+    <footer class="influencer-footer">
         <div class="container">
-          <div class="row">
-            <div class="col-md-3 footer-section">
-              <h5 class="footer-title">Follow Us</h5>
-              <div class="social-icons">
-                <a href="#" class="social-icon" aria-label="Facebook"
-                  ><i class="fab fa-facebook-f"></i
-                ></a>
-                <a href="#" class="social-icon" aria-label="Twitter"
-                  ><i class="fab fa-twitter"></i
-                ></a>
-                <a href="#" class="social-icon" aria-label="Instagram"
-                  ><i class="fab fa-instagram"></i
-                ></a>
-                <a href="#" class="social-icon" aria-label="LinkedIn"
-                  ><i class="fab fa-linkedin-in"></i
-                ></a>
-                <a href="#" class="social-icon" aria-label="YouTube"
-                  ><i class="fab fa-youtube"></i
-                ></a>
-              </div>
+            <div class="row justify-content-between">
+                <div class="col-md-4 col-sm-6 mb-4 mb-md-0">
+                    <h5>Useful Links</h5>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Client Support</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 col-sm-6 mb-4 mb-md-0">
+                    <h5>Connect With Us</h5>
+                    <div class="social-icons">
+                        <a href="#" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <div class="footer-bottom">
-            <p>
-              &copy; 2025 StarWave. All rights reserved. | Connecting brands
-              with influential creators across India.
-            </p>
-          </div>
+            <div class="row footer-bottom">
+                <div class="col-12">
+                    <p>&copy; 2024 StarWave. All rights reserved.</p>
+                    <p>Connecting brands with influential creators across India.</p>
+                </div>
+            </div>
         </div>
-      </footer>
-    </div>
+    </footer>
 
-    <!-- Settings Modal -->
-    <div
-      class="modal fade"
-      id="settingsModal"
-      tabindex="-1"
-      aria-labelledby="settingsModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="settingsModalLabel">
-              <i class="fas fa-cog me-2"></i>Account Settings
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form ng-submit="updatePassword()">
-              <div class="mb-3">
-                <label for="currentPassword" class="form-label"
-                  >Current Password</label
-                >
-                <input
-                  type="password"
-                  class="form-control"
-                  id="currentPassword"
-                  ng-model="passwordData.currentPassword"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="newPassword" class="form-label">New Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="newPassword"
-                  ng-model="passwordData.newPassword"
-                  required
-                />
-              </div>
-              <div class="mb-4">
-                <label for="confirmPassword" class="form-label"
-                  >Confirm New Password</label
-                >
-                <input
-                  type="password"
-                  class="form-control"
-                  id="confirmPassword"
-                  ng-model="passwordData.confirmPassword"
-                  required
-                />
-              </div>
-              <div class="d-grid">
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  ng-disabled="updating"
-                >
-                  <span ng-if="updating" class="loading me-2"></span>
-                  <i class="fas fa-key me-2" ng-if="!updating"></i>
-                  {{updating ? 'Updating...' : 'Update Password'}}
-                </button>
-              </div>
-            </form>
-          </div>
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="settingsModalLabel">
+                        <i class="fas fa-cog me-2"></i>Account Settings
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form ng-submit="updatePassword()">
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" ng-model="passwordData.currentPassword" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" ng-model="passwordData.newPassword" required />
+                        </div>
+                        <div class="mb-4">
+                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" ng-model="passwordData.confirmPassword" required />
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary" ng-disabled="updating">
+                                <span ng-if="updating" class="loading me-2"></span>
+                                <i class="fas fa-key me-2" ng-if="!updating"></i>
+                                {{updating ? 'Updating...' : 'Update Password'}}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="script/client-Dash.js"></script>
 </body>
 </html>

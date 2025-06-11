@@ -8,25 +8,17 @@ module.controller("myController", function ($scope, $http) {
     $scope.selectedCategory = '';
     $scope.influencers = [];
     $scope.selectedInfluencer = {}; // Stores the influencer object for the details modal
+    $scope.searchName = ''; // Initialize searchName to prevent undefined issues
 
     // Dummy data for categories and cities (replace with actual API calls later if needed)
-    const allCities = {
-        "Technology": ["Bengaluru", "Hyderabad", "Pune"],
-        "Finance": ["Mumbai", "Ahmedabad", "Delhi"],
-        "Business": ["Mumbai", "Bengaluru", "Delhi"],
-        "Content Creator": ["Mumbai", "Delhi", "Bengaluru", "Chennai"],
-        "Singer": ["Mumbai", "Delhi", "Kolkata"],
-        "Dancer": ["Mumbai", "Chennai", "Delhi"],
-        "Actor": ["Mumbai", "Delhi"],
-        "Education": ["Delhi", "Pune", "Bengaluru"],
-        "Health": ["Mumbai", "Delhi", "Chennai"]
-    };
+    // Removed the static allCities data as you're now fetching from backend
+    // const allCities = { ... };
 
     // Initialize and fetch cities based on selected category on load
     $scope.init = function () {
         $scope.updateCities();
         // After initial load, check saved status
-        $scope.checkSavedStatus();
+        // $scope.checkSavedStatus(); // This is called after searchInfluencers now, which is better
     };
 
     // Updates the list of cities based on the selected category
@@ -36,7 +28,13 @@ module.controller("myController", function ($scope, $http) {
 
         $http.get(url, { params: { field: field } })
             .then(function (response) {
-                $scope.cities = response.data.map((cityObj) => cityObj.city);
+                // Ensure response.data is an array and map it
+                if (Array.isArray(response.data)) {
+                    $scope.cities = response.data.map((cityObj) => cityObj.city);
+                } else {
+                    console.warn('Backend /update-cities did not return an array:', response.data);
+                    $scope.cities = [];
+                }
             })
             .catch(function (err) {
                 console.error('Error fetching cities:', err);
@@ -48,49 +46,46 @@ module.controller("myController", function ($scope, $http) {
     $scope.searchInfluencers = function () {
         let params = {
             category: $scope.selectedCategory,
-            location: $scope.selectedCity,
-            name: $scope.searchName || '', // Get the name from input
+            location: $scope.selectedCity, // Ensure $scope.selectedCity is set from your HTML select
+            name: $scope.searchName || '',
         };
 
-        // In a real application, this would be an API call to your backend
-        // For demonstration, we'll simulate filtering dummy data.
         console.log("Searching with:", params);
 
-        // Simulate backend data fetching
         $http.get('/search-influencers', { params: params }) // Use your actual backend endpoint
             .then(function (response) {
                 $scope.influencers = response.data; // Assume backend returns a list of influencer objects
-                // Log image paths for verification (remove in production)
+                
+                // Initialize isSaved and isSaving properties for each influencer
                 $scope.influencers.forEach(function (inf) {
-                    console.log('Image path:', '/uploads/' + inf.pic);
-                    // Initialize isSaved and isSaving properties for each influencer
-                    inf.isSaved = false;
-                    inf.isSaving = false;
+                    // console.log('Image path:', '/uploads/' + inf.pic); // Uncomment for debugging image paths
+                    inf.isSaved = false; // Default to not saved
+                    inf.isSaving = false; // Default to not saving
                 });
+
                 // After influencers are loaded, check their saved status
                 $scope.checkSavedStatus();
 
                 if ($scope.influencers.length === 0) {
                     showToast('Info', 'No influencers found matching your criteria.', 'info');
+                } else {
+                    showToast('Success', `${$scope.influencers.length} influencers found!`, 'success');
                 }
             })
             .catch(function (err) {
                 console.error('Error searching influencers:', err);
                 showToast('Error', 'Failed to search for influencers.', 'error'); // Use custom toast
             });
+            // NO $scope.$apply() here, $http handles it.
     };
 
     // Shows details of a selected influencer in a modal
     $scope.showDetails = function (influencer) {
         $scope.selectedInfluencer = angular.copy(influencer); // Use angular.copy to prevent direct modification
-        // Ensure isSaved and isSaving properties are propagated to the modal's selectedInfluencer
-        // (These properties should ideally be fetched from the backend when the modal opens if not already on the object)
-        $scope.selectedInfluencer.isSaved = influencer.isSaved;
-        $scope.selectedInfluencer.isSaving = influencer.isSaving;
-
-        // If the modal is already open and you want to ensure the button state is fresh
-        // you might call a specific check for this single influencer.
-        // For now, assume it's copied from the card state.
+        // These properties should ideally be copied from the main list's influencer object
+        // if they are updated dynamically.
+        // $scope.selectedInfluencer.isSaved = influencer.isSaved; // Already part of angular.copy if present
+        // $scope.selectedInfluencer.isSaving = influencer.isSaving; // Already part of angular.copy if present
 
         new bootstrap.Modal(document.getElementById('influencerModal')).show();
     };
@@ -101,7 +96,6 @@ module.controller("myController", function ($scope, $http) {
      * @param {string} influencerName - The influencer's name.
      */
     $scope.saveInfluencer = function(iemail, influencerName) {
-        // Find the specific influencer object in the list
         const influencerToUpdate = $scope.influencers.find(inf => inf.emailid === iemail);
 
         if (influencerToUpdate && influencerToUpdate.isSaving) {
@@ -115,6 +109,7 @@ module.controller("myController", function ($scope, $http) {
 
         if (influencerToUpdate) {
             influencerToUpdate.isSaving = true; // Set saving state
+            // No need for $scope.$apply() here, this change will be picked up by the next digest
         }
 
         const requestData = {
@@ -127,12 +122,14 @@ module.controller("myController", function ($scope, $http) {
                 if (influencerToUpdate) {
                     influencerToUpdate.isSaved = true; // Mark as saved on success
                     influencerToUpdate.isSaving = false; // Reset saving state
+                    // No need for $scope.$apply() here.
                 }
                 showToast('Success', response.data.message || `'${influencerName}' saved successfully!`, 'success');
             })
             .catch(function(error) {
                 if (influencerToUpdate) {
                     influencerToUpdate.isSaving = false; // Reset saving state on error
+                    // No need for $scope.$apply() here.
                 }
                 console.error('Error saving influencer:', error);
                 let errorMessage = 'Failed to save influencer.';
@@ -143,11 +140,8 @@ module.controller("myController", function ($scope, $http) {
                     if (influencerToUpdate) influencerToUpdate.isSaved = true; // Ensure UI is updated
                 }
                 showToast('Error', errorMessage, 'error');
-            })
-            .finally(function() {
-                // Manually apply scope changes if not automatically detected (common after async ops)
-                $scope.$apply();
             });
+            // Removed .finally() with $scope.$apply() - $http handles the digest.
     };
 
     /**
@@ -157,40 +151,40 @@ module.controller("myController", function ($scope, $http) {
     $scope.checkSavedStatus = function() {
         if (!$scope.influencers || $scope.influencers.length === 0) return;
 
-        // Fetch saved influencers for the current client first
         $http.get('/api/get-saved-influencers', {
             params: { cemail: $scope.clientEmail }
         })
         .then(function(response) {
-            const savedEmails = new Set(response.data.map(item => item.emailid)); // Assuming saved list returns emailid
+            if (Array.isArray(response.data)) {
+                const savedEmails = new Set(response.data.map(item => item.emailid)); // Assuming saved list returns emailid
 
-            $scope.influencers.forEach(function(influencer) {
-                // Update the isSaved property based on the fetched list
-                influencer.isSaved = savedEmails.has(influencer.emailid);
-            });
+                $scope.influencers.forEach(function(influencer) {
+                    influencer.isSaved = savedEmails.has(influencer.emailid);
+                });
 
-            // If the details modal is open, ensure its influencer's saved status is updated too
-            if ($scope.selectedInfluencer && $scope.selectedInfluencer.emailid) {
-                const modalInfluencerInList = $scope.influencers.find(inf => inf.emailid === $scope.selectedInfluencer.emailid);
-                if (modalInfluencerInList) {
-                    $scope.selectedInfluencer.isSaved = modalInfluencerInList.isSaved;
+                // If the details modal is open, ensure its influencer's saved status is updated too
+                if ($scope.selectedInfluencer && $scope.selectedInfluencer.emailid) {
+                    const modalInfluencerInList = $scope.influencers.find(inf => inf.emailid === $scope.selectedInfluencer.emailid);
+                    if (modalInfluencerInList) {
+                        $scope.selectedInfluencer.isSaved = modalInfluencerInList.isSaved;
+                    }
                 }
+            } else {
+                console.warn('Backend /api/get-saved-influencers did not return an array:', response.data);
             }
         })
         .catch(function(error) {
             console.error('Error checking saved status:', error);
             showToast('Error', 'Failed to check saved statuses for influencers.', 'error');
-        })
-        .finally(function() {
-             $scope.$apply(); // Ensure UI updates are reflected
         });
+        // Removed .finally() with $scope.$apply() - $http handles the digest.
     };
 
-    // Immediately call checkSavedStatus after search results are loaded
-    // This is now handled within the .then() block of searchInfluencers for cleaner flow.
+    // Immediately call init to set up initial state
+    $scope.init();
 });
 
-// Custom Toast Notification Function (defined globally)
+// Custom Toast Notification Function (defined globally) - Keep this as is
 /**
  * Displays a custom toast notification.
  * @param {string} title - The title of the toast (e.g., "Success", "Error").
