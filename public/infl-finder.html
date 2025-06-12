@@ -107,70 +107,67 @@
 
     <!-- Influencer Details Modal -->
     <div class="modal fade" id="influencerModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{selectedInfluencer.name}}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-4 text-center">
-                                <img ng-src="/uploads/{{selectedInfluencer.pic}}" class="rounded-circle modal-profile-image mb-3"
-                                    alt="{{selectedInfluencer.name}}"
-                                    onerror="this.src='/uploads/default-profile.jpg'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{selectedInfluencer.name}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <img ng-src="/uploads/{{selectedInfluencer.pic}}" class="rounded-circle modal-profile-image mb-3"
+                                alt="{{selectedInfluencer.name}}"
+                                onerror="this.src='/uploads/default-profile.jpg'">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="modal-info">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Gender:</strong> {{selectedInfluencer.gender}}</p>
+                                        <p><strong>Date of Birth:</strong> {{selectedInfluencer.dob}}</p>
+                                        <p><strong>City:</strong> {{selectedInfluencer.city}}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Fields:</strong> {{selectedInfluencer.field}}</p>
+                                        <p><strong>Address:</strong> {{selectedInfluencer.address}}</p>
+                                    </div>
+                                </div>
+                                <div class="social-links">
+                                    <a ng-if="selectedInfluencer.insta" href="https://instagram.com/{{selectedInfluencer.insta}}"
+                                        target="_blank" class="btn social-btn instagram">
+                                        <i class="bi bi-instagram"></i> Instagram
+                                    </a>
+                                    <a ng-if="selectedInfluencer.youtube" href="https://youtube.com/{{selectedInfluencer.youtube}}"
+                                        target="_blank" class="btn social-btn youtube">
+                                        <i class="bi bi-youtube"></i> YouTube
+                                    </a>
+                                </div>
                             </div>
-                            <div class="col-md-8">
-                                <div class="modal-info">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p><strong>Gender:</strong> {{selectedInfluencer.gender}}</p>
-                                            <p><strong>Date of Birth:</strong> {{selectedInfluencer.dob}}</p>
-                                            <p><strong>City:</strong> {{selectedInfluencer.city}}</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p><strong>Fields:</strong> {{selectedInfluencer.field}}</p>
-                                            <p><strong>Address:</strong> {{selectedInfluencer.address}}</p>
-                                        </div>
-                                    </div>
-                                    <div class="social-links">
-                                        <a ng-if="selectedInfluencer.insta" href="https://instagram.com/{{selectedInfluencer.insta}}"
-                                           target="_blank" class="btn social-btn instagram">
-                                            <i class="bi bi-instagram"></i> Instagram
-                                        </a>
-                                        <a ng-if="selectedInfluencer.youtube" href="https://youtube.com/{{selectedInfluencer.youtube}}"
-                                           target="_blank" class="btn social-btn youtube">
-                                            <i class="bi bi-youtube"></i> YouTube
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="bio-section" ng-if="selectedInfluencer.otherinfo">
-                                    <h6><i class="bi bi-person-lines-fill me-2"></i>Bio</h6>
-                                    <p>{{selectedInfluencer.otherinfo}}</p>
-                                </div>
+                            <div class="bio-section" ng-if="selectedInfluencer.otherinfo">
+                                <h6><i class="bi bi-person-lines-fill me-2"></i>Bio</h6>
+                                <p>{{selectedInfluencer.otherinfo}}</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-contact">
-                        <i class="bi bi-envelope me-2"></i>Contact
-                    </button>
-                    <!-- New Save Button in Modal Footer -->
-                    <!-- The ng-click will call the saveInfluencer function, passing the selected influencer's emailid and name -->
-                    <button type="button" class="btn btn-save" ng-click="saveInfluencer(selectedInfluencer.emailid, selectedInfluencer.name); $hide()">
-                        <i class="bi bi-bookmark me-2"></i>Save
-                    </button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle me-2"></i>Close
-                    </button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-contact" ng-click="contactInfluencer(selectedInfluencer)">
+                    <i class="bi bi-envelope me-2"></i>Contact
+                </button>
+                <button type="button" class="btn btn-save" ng-click="saveInfluencer(selectedInfluencer.emailid, selectedInfluencer.name); $hide()">
+                    <i class="bi bi-bookmark me-2"></i>Save
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Close
+                </button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Toast Container for notifications (empty div, content added by JS) -->
-    <div class="toast-container"></div>
+<div class="toast-container"></div>
 </body>
 </html>

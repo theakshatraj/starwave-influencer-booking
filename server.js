@@ -1,12 +1,21 @@
 const express = require("express");
 const mysql2 = require("mysql2");
+const bodyParser = require('body-parser');
+require('dotenv').config();
+const cors = require('cors');
+const nodemailer = require('nodemailer');
 const fileUploader = require("express-fileupload");
 const path = require("path");
 const fs = require("fs");
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 app.use(express.json()); // Add this line to parse JSON bodies
-const PORT = 2024;
+
+app.use(cors());
+
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
 
 // Start the server
 app.listen(PORT, () => {
@@ -14,6 +23,7 @@ app.listen(PORT, () => {
 });
 
 // Middleware setup
+    
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUploader());
@@ -26,6 +36,14 @@ const dbConfig = {
     password: "A@82059raj",
     database: "project",
 };
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // Use Gmail service
+    auth: {
+        user: process.env.EMAIL_USER, // Your Gmail address from .env
+        pass: process.env.EMAIL_PASS  // Your Gmail App Password from .env
+    }
+});
 
 const mysql = mysql2.createConnection(dbConfig);
 
@@ -561,6 +579,34 @@ app.get("/search-influencers", (req, res) => {
             res.json(results);
         }
     });
+});
+
+app.post('/api/send-contact-email', async (req, res) => {
+    const { to, subject, text } = req.body; // 'to' is the influencer's email, 'subject' and 'text' are pre-filled
+
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.error('Email credentials not set in .env');
+        return res.status(500).json({ message: 'Server email configuration error.' });
+    }
+    if (!to || !subject || !text) {
+        return res.status(400).json({ message: 'Missing required email fields: to, subject, or text.' });
+    }
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER, // Sender's email (your admin email)
+        to: to,                      // Influencer's email
+        subject: subject,
+        text: text
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Email sent successfully to ${to}`);
+        res.status(200).json({ message: 'Email sent successfully!' });
+    } catch (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ message: 'Failed to send email.', error: error.message });
+    }
 });
 
 app.post('/api/save-influencer', (req, res) => {

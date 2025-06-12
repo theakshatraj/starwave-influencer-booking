@@ -7,18 +7,14 @@ module.controller("myController", function ($scope, $http) {
     $scope.cities = [];
     $scope.selectedCategory = '';
     $scope.influencers = [];
-    $scope.selectedInfluencer = {}; // Stores the influencer object for the details modal
-    $scope.searchName = ''; // Initialize searchName to prevent undefined issues
+    $scope.selectedInfluencer = {}; 
+    $scope.searchName = ''; 
 
-    // Dummy data for categories and cities (replace with actual API calls later if needed)
-    // Removed the static allCities data as you're now fetching from backend
-    // const allCities = { ... };
 
     // Initialize and fetch cities based on selected category on load
     $scope.init = function () {
         $scope.updateCities();
-        // After initial load, check saved status
-        // $scope.checkSavedStatus(); // This is called after searchInfluencers now, which is better
+      
     };
 
     // Updates the list of cities based on the selected category
@@ -56,7 +52,6 @@ module.controller("myController", function ($scope, $http) {
             .then(function (response) {
                 $scope.influencers = response.data; // Assume backend returns a list of influencer objects
                 
-                // Initialize isSaved and isSaving properties for each influencer
                 $scope.influencers.forEach(function (inf) {
                     // console.log('Image path:', '/uploads/' + inf.pic); // Uncomment for debugging image paths
                     inf.isSaved = false; // Default to not saved
@@ -90,6 +85,63 @@ module.controller("myController", function ($scope, $http) {
         new bootstrap.Modal(document.getElementById('influencerModal')).show();
     };
 
+$scope.contactInfluencer = function (influencer) {
+    const adminEmail = 'aksh.devproj@gmail.com'; // admin email
+    const influencerEmail = influencer.emailid; // Influencer's email from the object
+    const influencerName = influencer.name;     // Influencer's name from the object
+
+    if (!influencerEmail) {
+        showToast('Error', 'Influencer email not available.', 'error');
+        return;
+    }
+
+    // You can customize this message as needed
+    const subject = `Collaboration Opportunity with ${influencerName} from StarWave`;
+    const messageBody = `Dear ${influencerName},\n\n` +
+                        `We hope this email finds you well. \n\n` +
+                        `We are reaching out from StarWave, a platform dedicated to connecting brands and creators. ` +
+                        `We are highly impressed by your work in the ${influencer.field} category, particularly your content around ${influencer.city}. ` +
+                        `We believe your unique style and audience align perfectly with potential collaboration opportunities we have.\n\n` +
+                        `Would you be open to discussing potential partnerships and how we can work together? ` +
+                        `Please let us know your availability for a brief call or if you prefer to communicate via email.\n\n` +
+                        `Looking forward to hearing from you soon.\n\n` +
+                        `Best regards,\n` +
+                        `The StarWave Team\n` +
+                        `Contact: ${adminEmail}`;
+
+    const requestData = {
+        to: influencerEmail,
+        subject: subject,
+        text: messageBody
+    };
+
+    // Show a toast immediately to indicate email is being sent
+    showToast('Sending', `Sending email to ${influencerName}...`, 'info', 5000); // Longer duration
+
+    $http.post('/api/send-contact-email', requestData) // New backend endpoint
+        .then(function (response) {
+            showToast('Success', response.data.message || `Email sent to ${influencerName}!`, 'success');
+
+         
+            const influencerModalElement = document.getElementById('influencerModal');
+            const influencerModal = bootstrap.Modal.getInstance(influencerModalElement);
+            if (influencerModal) {
+                influencerModal.hide();
+            } else {
+                new bootstrap.Modal(influencerModalElement).hide();
+            }
+
+        })
+        .catch(function (error) {
+            console.error('Error sending contact email:', error);
+            let errorMessage = 'Failed to send email. Please try again.';
+            if (error.data && error.data.message) {
+                errorMessage = error.data.message;
+            }
+            showToast('Error', errorMessage, 'error');
+        });
+};
+
     /**
      * Saves an influencer for the current client.
      * @param {string} iemail - The influencer's email ID.
@@ -109,7 +161,6 @@ module.controller("myController", function ($scope, $http) {
 
         if (influencerToUpdate) {
             influencerToUpdate.isSaving = true; // Set saving state
-            // No need for $scope.$apply() here, this change will be picked up by the next digest
         }
 
         const requestData = {
@@ -144,10 +195,7 @@ module.controller("myController", function ($scope, $http) {
             // Removed .finally() with $scope.$apply() - $http handles the digest.
     };
 
-    /**
-     * Checks the saved status for all influencers currently displayed.
-     * This function should be called after `searchInfluencers` updates the list.
-     */
+    
     $scope.checkSavedStatus = function() {
         if (!$scope.influencers || $scope.influencers.length === 0) return;
 
