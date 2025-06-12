@@ -86,7 +86,7 @@ module.controller("myController", function ($scope, $http) {
     };
 
 $scope.contactInfluencer = function (influencer) {
-    const adminEmail = 'aksh.devproj@gmail.com'; // admin email
+    const adminEmail = 'aksh.devproj@gmail.com'; // admin email(enter ur email)
     const influencerEmail = influencer.emailid; // Influencer's email from the object
     const influencerName = influencer.name;     // Influencer's name from the object
 
