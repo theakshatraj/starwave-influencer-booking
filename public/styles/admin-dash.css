@@ -1,0 +1,252 @@
+/* General Body and Font Styles */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa; /* Lighter background for a cleaner, professional admin feel */
+    color: #343a40; /* Darker text for readability */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures footer sticks to the bottom */
+}
+
+/* Admin Navbar Styling - Combining StarWave theme with professional admin look */
+.starwave-admin-navbar {
+    background-color: #1a1a1a; /* Dark background from your primary theme */
+    padding: 1rem 0;
+    font-weight: 600;
+}
+
+.starwave-admin-navbar .navbar-brand {
+    color: #ffd700; /* Gold accent for the brand name */
+    font-weight: 700;
+    font-size: 1.75rem;
+    padding-left: 1.5rem; /* Space from left edge */
+    transition: color 0.3s ease;
+}
+
+.starwave-admin-navbar .navbar-brand:hover {
+    color: #e0b800; /* Slightly darker gold on hover */
+}
+
+.starwave-admin-navbar .nav-link {
+    color: #cccccc; /* Light grey for inactive links */
+    padding: 0.75rem 1.25rem;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border-radius: 5px; /* Slightly rounded links */
+}
+
+.starwave-admin-navbar .nav-link:hover {
+    color: #ffffff; /* White on hover */
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle highlight on hover */
+}
+
+.starwave-admin-navbar .nav-link.active {
+    color: #ffd700; /* Gold accent for the active link */
+    background-color: rgba(255, 255, 255, 0.05); /* Very subtle background for active */
+}
+
+/* Main Content Area */
+.admin-main-content {
+    background-color: #ffffff; /* Clean white background for main content area */
+    border-radius: 8px; /* Slightly rounded corners for the content block */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* More prominent shadow for the whole content block */
+    padding: 40px;
+    margin-top: 30px;
+    margin-bottom: 30px; /* Space above and below */
+    flex-grow: 1; /* Allows it to expand and push footer down */
+}
+
+.admin-heading {
+    color: #1a1a1a; /* Dark text for primary headings */
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px !important;
+}
+
+/* Dashboard Cards Styling */
+.admin-card {
+    border: none; /* Remove default bootstrap border */
+    border-radius: 10px; /* More rounded corners for cards */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Soft shadow for cards */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* Ensures image corners are rounded */
+}
+
+.admin-card:hover {
+    transform: translateY(-8px); /* Lift effect on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+.admin-card-img {
+    height: 150px; /* Fixed height for consistency */
+    object-fit: contain; /* Ensures images fit without cropping */
+    background-color: #f0f2f5; /* Light background for image area */
+    border-bottom: 1px solid #e9ecef; /* Separator for image and body */
+    display: flex; /* For centering Font Awesome icon */
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-card-title {
+    color: #1a1a1a; /* Dark text for card titles */
+    font-weight: 600;
+    margin-top: 15px; /* Space from image */
+    margin-bottom: 10px;
+}
+
+.admin-card-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #6c757d; /* Muted text for card description */
+}
+
+/* Custom Buttons - Aligning with StarWave's button style but with admin colors */
+.admin-btn-primary {
+    background-color: #007bff; /* Standard Bootstrap primary blue */
+    border-color: #007bff;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    border-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.admin-btn-success {
+    background-color: #28a745; /* Standard Bootstrap success green */
+    border-color: #28a745;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-btn-success:hover {
+    background-color: #1e7e34; /* Darker green on hover */
+    border-color: #1e7e34;
+    transform: translateY(-2px);
+}
+
+/* New: Admin Secondary Button for Client Console */
+.admin-btn-secondary {
+    background-color: #6c757d; /* Standard Bootstrap secondary grey */
+    border-color: #6c757d;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-btn-secondary:hover {
+    background-color: #5a6268; /* Darker grey on hover */
+    border-color: #545b62;
+    transform: translateY(-2px);
+}
+
+
+.admin-btn-info { /* Re-used for consistency */
+    background-color: #17a2b8; /* Standard Bootstrap info cyan */
+    border-color: #17a2b8;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-btn-info:hover {
+    background-color: #117a8b; /* Darker cyan on hover */
+    border-color: #117a8b;
+    transform: translateY(-2px);
+}
+
+.admin-btn-warning { /* Re-used for consistency */
+    background-color: #ffc107; /* Standard Bootstrap warning yellow */
+    border-color: #ffc107;
+    color: #212529; /* Dark text for contrast */
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-btn-warning:hover {
+    background-color: #e0a800; /* Darker yellow on hover */
+    border-color: #e0a800;
+    transform: translateY(-2px);
+}
+
+
+/* Admin Footer Styling */
+.starwave-admin-footer {
+    background-color: #1a1a1a; /* Dark background from your main theme */
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.starwave-admin-footer .social-icons a {
+    color: #ccc;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.starwave-admin-footer .social-icons a:hover {
+    color: #ffd700; /* Gold accent on hover */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .starwave-admin-navbar .navbar-brand {
+        padding-left: 1rem;
+        font-size: 1.5rem;
+    }
+    .starwave-admin-navbar .nav-link {
+        text-align: center;
+        padding: 0.5rem 1rem;
+    }
+    .admin-main-content {
+        padding: 20px;
+        margin: 15px;
+    }
+    .admin-heading {
+        font-size: 2rem;
+    }
+    .admin-card {
+        width: 100% !important; /* Cards take full width on small screens */
+    }
+    .dashboard-cards-grid {
+        gap: 20px; /* Reduce gap on smaller screens */
+    }
+}
+
+/* Optional: Additional styles for a "professional touch" */
+/* Add subtle border to main content area */
+.admin-main-content {
+    border: 1px solid #e9ecef;
+}
+
+/* Slightly more refined button focus states */
+.btn:focus {
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25); /* Default blue focus */
+}
+.admin-btn-primary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+.admin-btn-success:focus {
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+}
+.admin-btn-secondary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25); /* Secondary grey focus */
+}
+.admin-btn-info:focus {
+    box-shadow: 0 0 0 0.25rem rgba(23, 162, 184, 0.25);
+}
+.admin-btn-warning:focus {
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+}

@@ -37,6 +37,18 @@ const dbConfig = {
     database: "project",
 };
 
+// const dbConfig = {
+//     host: "bgtl8q0vhmgxdsvvcxxw-mysql.services.clever-cloud.com",
+//     user: "uksfiiksoxvz5fll",
+//     passkword: "e1aQmGi3nNS1Px9AAWTA",
+//     database: "bgtl8q0vhmgxdsvvcxxw",
+//     keepAliveDelay: 10000,
+//     enableKeepAlive: true,
+// };
+
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
 const transporter = nodemailer.createTransport({
     service: 'gmail', // Use Gmail service
     auth: {
@@ -49,7 +61,7 @@ const mysql = mysql2.createConnection(dbConfig);
 
 mysql.connect((err) => {
     if (!err) {
-        console.log("Connected to MySQL database successfully.");
+        console.log("Connected to database successfully.");
     } else {
         console.error("Database connection error:", err.message);
     }
@@ -77,11 +89,30 @@ app.get("/signup-process", (req, res) => {
 });
 
 // Login process
-app.get("/login-process", (req, res) => {
-    const { txtEmaill: email, txtPwd: pwd } = req.query;
+app.post("/login-process", (req, res) => {
+    const { txtEmaill: email, txtPwd: pwd } = req.body;
+
+    if (!email || !pwd) {
+        return res.status(400).json({ success: false, message: "Email and password are required." });
+    }
+    
+    // --- Admin Login Logic ---
+    if (email === ADMIN_EMAIL) {
+        if (pwd === ADMIN_PASSWORD) { 
+            console.log(`Admin user ${email} logged in.`);
+            return res.status(200).json({
+                success: true,
+                message: "Admin login successful!",
+                email: email,
+                role: "Admin"
+            });
+        } else {
+            return res.status(401).json({ success: false, message: "Invalid admin password." });
+        }
+    }
 
     const query = "SELECT * FROM users WHERE email = ? AND pwd = ?";
-    mysql.query(query, [email, pwd], (err, result) => {
+    mysql.query(query, [email, pwd], (err, resxult) => {
         if (err) {
             res.status(500).send(err.message);
         } else if (result.length === 0) {
@@ -471,11 +502,23 @@ app.get("/fetch-all", (req, res) => {
 });
 
 // Fetch influencers
-app.get("/fetch-users", (req, res) => {
+app.get("/fetch-infl", (req, res) => {
     const query = "SELECT * FROM iprofile";
     mysql.query(query, (err, results) => {
         if (err) {
             res.status(500).send(err.message);
+        } else {
+            res.json(results);
+        }
+    });
+});
+
+app.get("/fetch-clients", (req, res) => {
+    const query = "SELECT * FROM cprofile";
+    mysql.query(query, (err, results) => {
+        if (err) {
+            console.error("Error fetching client data:", err); // Log error for debugging
+            res.status(500).send("Error fetching client data: " + err.message);
         } else {
             res.json(results);
         }

@@ -1,63 +1,89 @@
 $(document).ready(function () {
-  // Signup Handler
-  $("#signupBtn").click(function () {
-    const email = $("#signupEmail").val();
-    const pwd = $("#signupPwd").val();
-    const utype = $("#signupRole").val(); // this is the role (client/influencer)
+    // Admin Email Constant (for client-side redirection)
+    const ADMIN_EMAIL = 'aksh.devproj@gmail.com';
 
-    if (!email || !pwd || !utype) {
-      alert("Please fill all fields.");
-      return;
+    // Helper for showing alerts/toasts (if you have one, or just use alert)
+    function showCustomAlert(type, message) {
+        // You can replace this with your actual toast/alert library (e.g., SweetAlert, Toastr)
+        alert(`${type}: ${message}`);
     }
 
-    $.get("/signup-process", { txtEmail: email, pwd, combo: utype })
-      .done(function (resp) {
-        alert(resp);
-        if (resp.includes("successfully")) {
-          // Hide modal
-          $("#signupModal").modal("hide");
+    // --- Signup Handler (UNCHANGED from your original code) ---
+    $("#signupBtn").click(function () {
+        const email = $("#signupEmail").val();
+        const pwd = $("#signupPwd").val();
+        const utype = $("#signupRole").val(); // this is the role (client/influencer)
 
-          // Store email & redirect based on role
-          if (utype === "Client") {
-            localStorage.setItem("clientEmail", email);
-            window.location.href = "client-Dash.html";
-          } else if (utype === "influencer") {
-            localStorage.setItem("inflEmail", email);
-            window.location.href = "Infl-Dash.html";
-          }
+        if (!email || !pwd || !utype) {
+            alert("Please fill all fields.");
+            return;
         }
-      })
-      .fail(function (err) {
-        alert("Signup failed: " + err.statusText);
-      });
-  });
 
-  // Login Handler
-  $("#loginBtn").click(function () {
-    const email = $("#loginEmail").val();
-    const pwd = $("#loginPwd").val();
+        // Using $.get as per your original code, but remember POST is more secure for credentials
+        $.get("/signup-process", { txtEmail: email, pwd, combo: utype })
+            .done(function (resp) {
+                alert(resp);
+                if (resp.includes("successfully")) {
+                    // Hide modal
+                    $("#signupModal").modal("hide");
 
-    if (!email || !pwd) {
-      alert("Please enter login credentials.");
-      return;
-    }
+                    // Store email & redirect based on role
+                    if (utype === "Client") {
+                        localStorage.setItem("clientEmail", email);
+                        window.location.href = "client-Dash.html";
+                    } else if (utype === "influencer") {
+                        localStorage.setItem("inflEmail", email);
+                        window.location.href = "Infl-Dash.html";
+                    }
+                }
+            })
+            .fail(function (err) {
+                alert("Signup failed: " + err.statusText);
+            });
+    });
 
-    $.get("/login-process", { txtEmaill: email, txtPwd: pwd })
-      .done(function (resp) {
-        if (resp === "Client") {
-          localStorage.setItem("clientEmail", email);
-          window.location.href = "client-Dash.html";
-        } else if (resp === "Influencer") {
-          localStorage.setItem("inflEmail", email);
-          window.location.href = "Infl-Dash.html";
-        } else {
-          alert(resp);
+    // --- Login Handler (MODIFIED for Admin Redirection) ---
+    $("#loginBtn").click(function () {
+        const email = $("#loginEmail").val();
+        const pwd = $("#loginPwd").val();
+
+        if (!email || !pwd) {
+            showCustomAlert("Error", "Please enter login credentials.");
+            return;
         }
-      })
-      .fail(function (err) {
-        alert("Login failed: " + err.statusText);
-      });
-  });
+
+        // Use $.post for login to send sensitive data in the request body (SECURITY FIX)
+        $.post("/login-process", { txtEmaill: email, txtPwd: pwd })
+            .done(function (resp) {
+                // Server now sends JSON response
+                if (resp.success) {
+                    const userRole = resp.role; // Get the role from the server response
+                    const userEmail = resp.email;
+
+                    if (userRole === "Admin") {
+                        localStorage.setItem("adminEmail", userEmail);
+                        window.location.href = "admin-Dash.html"; // Redirect to admin dashboard
+                    } else if (userRole === "Client") {
+                        localStorage.setItem("clientEmail", userEmail);
+                        window.location.href = "client-Dash.html";
+                    } else if (userRole === "Influencer") { // Note: Server might send 'Influencer'
+                        localStorage.setItem("inflEmail", userEmail);
+                        window.location.href = "Infl-Dash.html";
+                    } else {
+                        showCustomAlert("Warning", "Unknown user type. Redirecting to home.");
+                        window.location.href = "index.html"; // Fallback
+                    }
+                } else {
+                    showCustomAlert("Error", resp.message || "Login failed.");
+                }
+            })
+            .fail(function (jqXHR) {
+                // Error handling for failed HTTP request
+                const errorMessage = jqXHR.responseJSON ? jqXHR.responseJSON.message : jqXHR.statusText;
+                showCustomAlert("Error", "Login failed: " + errorMessage);
+                console.error("Login AJAX Error:", jqXHR.responseText);
+            });
+    });
 
   // --- Creator Filter Logic ---
 
