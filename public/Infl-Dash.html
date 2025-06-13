@@ -12,10 +12,9 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
-    <script src="script/Infl-Dash.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles/Infl-Dash.css">
-</head>
+    <script src="script/Infl-Dash.js"></script> </head>
 <body ng-controller="InfluencerController">
     <nav class="navbar navbar-expand-lg influencer-navbar">
         <div class="container-fluid">
@@ -50,8 +49,7 @@
     </nav>
 
     <div class="dashboard-main">
-        <h2>Welcome, {{ inflName }}!</h2>
-        <p class="lead mb-5">Manage your profile, bookings, events, and performance all in one place.</p>
+        <h2>Welcome, {{ inflName || 'Influencer' }}!</h2> <p class="lead mb-5">Manage your profile, bookings, events, and performance all in one place.</p>
 
         <div class="dashboard-grid">
             <a href="Infl-Profile.html" class="dashboard-card">
@@ -102,7 +100,6 @@
         </div>
     </div>
 
-    <!-- Booking Modal -->
     <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -153,7 +150,6 @@
         </div>
     </div>
     
-    <!-- Settings Modal -->
     <div class="modal fade" id="settingModal" tabindex="-1" aria-labelledby="settingModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -163,26 +159,41 @@
                 </div>
                 <div class="modal-body">
                     <form class="row g-3" ng-submit="updatePassword()">
-                        <div class="col-12">
-                            <div class="col-md-10 mx-auto">
-                                <label for="oldPwd" class="form-label text-start w-100">Old Password</label>
-                                <input type="password" class="form-control" id="oldPwd" ng-model="passwordData.currentPassword" required>
+                        <div class="col-12 d-flex justify-content-center">
+                            <div class="col-md-10">
+                                <label for="oldPwd" class="form-label visually-hidden">Old Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="oldPwd" ng-model="passwordData.currentPassword" placeholder="Old Password" required>
+                                    <span class="input-group-text password-toggle-icon" onclick="togglePasswordVisibility('oldPwd', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="col-md-10 mx-auto">
-                                <label for="newPwd" class="form-label text-start w-100">New Password</label>
-                                <input type="password" class="form-control" id="newPwd" ng-model="passwordData.newPassword" required>
+                        <div class="col-12 d-flex justify-content-center">
+                            <div class="col-md-10">
+                                <label for="newPwd" class="form-label visually-hidden">New Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="newPwd" ng-model="passwordData.newPassword" placeholder="New Password" required>
+                                    <span class="input-group-text password-toggle-icon" onclick="togglePasswordVisibility('newPwd', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="col-md-10 mx-auto">
-                                <label for="conPwd" class="form-label text-start w-100">Confirm Password</label>
-                                <input type="password" class="form-control" id="conPwd" ng-model="passwordData.confirmPassword" required>
+                        <div class="col-12 d-flex justify-content-center">
+                            <div class="col-md-10">
+                                <label for="conPwd" class="form-label visually-hidden">Confirm Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="conPwd" ng-model="passwordData.confirmPassword" placeholder="Confirm Password" required>
+                                    <span class="input-group-text password-toggle-icon" onclick="togglePasswordVisibility('conPwd', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer d-flex justify-content-center border-top-0 mt-4">
-                            <button type="button" class="btn btn-primary" ng-click="updatePassword()" ng-disabled="updating">
+                            <button type="submit" class="btn btn-primary" ng-click="updatePassword()" ng-disabled="updating">
                                 {{ updating ? 'Updating...' : 'Update Password' }}
                             </button>
                         </div>

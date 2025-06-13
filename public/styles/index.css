@@ -551,3 +551,17 @@ body {
 .modal-body .form-control::placeholder {
   color: var(--text-light);
 }
+
+.password-toggle-icon {
+  position: absolute;
+  right: 15px; /* Adjust as needed for spacing */
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d; /* A subtle color for the icon */
+  z-index: 100; /* Ensure it's above the input field */
+}
+
+.password-toggle-icon i {
+  pointer-events: none; /* Allows click to pass through to the span */
+}

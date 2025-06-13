@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Admin Email Constant (for client-side redirection)
-    const ADMIN_EMAIL = 'aksh.devproj@gmail.com';
+    const ADMIN_EMAIL = 'aksh.devproj@gmail.com'; // This is actually not directly used in the login logic anymore, but good to keep if used elsewhere.
 
     // Helper for showing alerts/toasts (if you have one, or just use alert)
     function showCustomAlert(type, message) {
@@ -8,7 +8,7 @@ $(document).ready(function () {
         alert(`${type}: ${message}`);
     }
 
-    // --- Signup Handler (UNCHANGED from your original code) ---
+    // --- Signup Handler (UNCHANGED) ---
     $("#signupBtn").click(function () {
         const email = $("#signupEmail").val();
         const pwd = $("#signupPwd").val();
@@ -19,19 +19,16 @@ $(document).ready(function () {
             return;
         }
 
-        // Using $.get as per your original code, but remember POST is more secure for credentials
         $.get("/signup-process", { txtEmail: email, pwd, combo: utype })
             .done(function (resp) {
                 alert(resp);
                 if (resp.includes("successfully")) {
-                    // Hide modal
                     $("#signupModal").modal("hide");
 
-                    // Store email & redirect based on role
                     if (utype === "Client") {
                         localStorage.setItem("clientEmail", email);
                         window.location.href = "client-Dash.html";
-                    } else if (utype === "influencer") {
+                    } else if (utype === "influencer") { // Keep 'influencer' as per your signup form if it's lowercase
                         localStorage.setItem("inflEmail", email);
                         window.location.href = "Infl-Dash.html";
                     }
@@ -42,7 +39,7 @@ $(document).ready(function () {
             });
     });
 
-    // --- Login Handler (MODIFIED for Admin Redirection) ---
+    // --- Login Handler (CORRECTED for all user types) ---
     $("#loginBtn").click(function () {
         const email = $("#loginEmail").val();
         const pwd = $("#loginPwd").val();
@@ -52,39 +49,66 @@ $(document).ready(function () {
             return;
         }
 
-        // Use $.post for login to send sensitive data in the request body (SECURITY FIX)
         $.post("/login-process", { txtEmaill: email, txtPwd: pwd })
             .done(function (resp) {
-                // Server now sends JSON response
-                if (resp.success) {
-                    const userRole = resp.role; // Get the role from the server response
-                    const userEmail = resp.email;
+                console.log("Login Response from Server:", resp); // Log the raw response
 
-                    if (userRole === "Admin") {
-                        localStorage.setItem("adminEmail", userEmail);
-                        window.location.href = "admin-Dash.html"; // Redirect to admin dashboard
-                    } else if (userRole === "Client") {
-                        localStorage.setItem("clientEmail", userEmail);
-                        window.location.href = "client-Dash.html";
-                    } else if (userRole === "Influencer") { // Note: Server might send 'Influencer'
-                        localStorage.setItem("inflEmail", userEmail);
-                        window.location.href = "Infl-Dash.html";
+                // Check if the response is an object (expected for admin success/failure)
+                if (typeof resp === 'object' && resp !== null && resp.success !== undefined) {
+                    // This block handles admin login success or explicit server-side JSON errors (e.g., invalid admin password)
+                    if (resp.success) {
+                        localStorage.setItem("adminEmail", resp.email);
+                        localStorage.setItem("userRole", resp.role); // Store the role for admin too
+                        showCustomAlert("Success", resp.message);
+                        window.location.href = "admin-dashboard.html"; // Redirect to admin dashboard
                     } else {
-                        showCustomAlert("Warning", "Unknown user type. Redirecting to home.");
-                        window.location.href = "index.html"; // Fallback
+                        showCustomAlert("Error", resp.message || "Admin login failed.");
                     }
-                } else {
-                    showCustomAlert("Error", resp.message || "Login failed.");
+                }
+                // Check if the response is a string (expected for regular user login/failure messages)
+                else if (typeof resp === 'string') {
+                    // This block handles successful client/influencer login OR specific string error messages
+                    const userType = resp; // "Client", "Influencer", "Invalid ID or password.", "You are blocked."
+
+                    if (userType === "Client") {
+                        localStorage.setItem("clientEmail", email); // Store the email for client
+                        localStorage.setItem("userRole", "Client"); // Store the role
+                        showCustomAlert("Success", "Client login successful!");
+                        window.location.href = "client-Dash.html";
+                    } else if (userType === "Influencer") { // Ensure case matches server response
+                        localStorage.setItem("inflEmail", email); // Store the email for influencer
+                        localStorage.setItem("userRole", "Influencer"); // Store the role
+                        showCustomAlert("Success", "Influencer login successful!");
+                        window.location.href = "Infl-Dash.html";
+                    } else if (userType === "Invalid ID or password." || userType === "You are blocked.") {
+                        // Specific error messages from the server for regular users
+                        showCustomAlert("Error", userType); // Display the exact error message
+                    } else {
+                        // Fallback for any other unexpected string response
+                        showCustomAlert("Warning", "Unknown response from server: " + userType);
+                        window.location.href = "index.html"; // Redirect to home or handle otherwise
+                    }
+                }
+                // Fallback for any other unexpected response format
+                else {
+                    showCustomAlert("Error", "An unexpected response format was received.");
+                    console.error("Unexpected login response format:", resp);
                 }
             })
             .fail(function (jqXHR) {
-                // Error handling for failed HTTP request
-                const errorMessage = jqXHR.responseJSON ? jqXHR.responseJSON.message : jqXHR.statusText;
+                // This block handles HTTP errors (e.g., 400 Bad Request, 500 Internal Server Error)
+                let errorMessage = "An unknown error occurred.";
+                if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                    errorMessage = jqXHR.responseJSON.message;
+                } else if (jqXHR.responseText) {
+                    errorMessage = jqXHR.responseText;
+                } else if (jqXHR.statusText) {
+                    errorMessage = jqXHR.statusText;
+                }
                 showCustomAlert("Error", "Login failed: " + errorMessage);
-                console.error("Login AJAX Error:", jqXHR.responseText);
+                console.error("Login AJAX Error:", jqXHR.status, jqXHR.responseText, jqXHR);
             });
     });
-
   // --- Creator Filter Logic ---
 
   // Function to filter creators
@@ -200,3 +224,18 @@ window.addEventListener("load", function () {
     typeWriter(heroTitle, originalText, 70); // 70ms per character for typing speed
   }, 500); // Start typing after 0.5 seconds
 });
+
+function togglePasswordVisibility(fieldId, iconElement) {
+  const passwordField = document.getElementById(fieldId);
+  const icon = iconElement.querySelector('i');
+
+  if (passwordField.type === 'password') {
+    passwordField.type = 'text';
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+  } else {
+    passwordField.type = 'password';
+    icon.classList.remove('fa-eye-slash');
+    icon.classList.add('fa-eye');
+  }
+}

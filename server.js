@@ -42,7 +42,7 @@ const dbConfig = {
 //     user: "uksfiiksoxvz5fll",
 //     passkword: "e1aQmGi3nNS1Px9AAWTA",
 //     database: "bgtl8q0vhmgxdsvvcxxw",
-//     keepAliveDelay: 10000,
+//     keepAliveInitialDelay: 10000,
 //     enableKeepAlive: true,
 // };
 
@@ -89,41 +89,41 @@ app.get("/signup-process", (req, res) => {
 });
 
 // Login process
-app.post("/login-process", (req, res) => {
-    const { txtEmaill: email, txtPwd: pwd } = req.body;
+    app.post("/login-process", (req, res) => {
+        const { txtEmaill: email, txtPwd: pwd } = req.body;
 
-    if (!email || !pwd) {
-        return res.status(400).json({ success: false, message: "Email and password are required." });
-    }
-    
-    // --- Admin Login Logic ---
-    if (email === ADMIN_EMAIL) {
-        if (pwd === ADMIN_PASSWORD) { 
-            console.log(`Admin user ${email} logged in.`);
-            return res.status(200).json({
-                success: true,
-                message: "Admin login successful!",
-                email: email,
-                role: "Admin"
-            });
-        } else {
-            return res.status(401).json({ success: false, message: "Invalid admin password." });
+        if (!email || !pwd) {
+            return res.status(400).json({ success: false, message: "Email and password are required." });
         }
-    }
+        
+        // --- Admin Login Logic ---
+        if (email === ADMIN_EMAIL) {
+            if (pwd === ADMIN_PASSWORD) { 
+                console.log(`Admin user ${email} logged in.`);
+                return res.status(200).json({
+                    success: true,
+                    message: "Admin login successful!",
+                    email: email,
+                    role: "Admin"
+                });
+            } else {
+                return res.status(401).json({ success: false, message: "Invalid admin password." });
+            }
+        }
 
-    const query = "SELECT * FROM users WHERE email = ? AND pwd = ?";
-    mysql.query(query, [email, pwd], (err, resxult) => {
-        if (err) {
-            res.status(500).send(err.message);
-        } else if (result.length === 0) {
-            res.send("Invalid ID or password.");
-        } else if (result[0].status === 1) {
-            res.send(result[0].utype);
-        } else {
-            res.send("You are blocked.");
-        }
+        const query = "SELECT * FROM users WHERE email = ? AND pwd = ?";
+        mysql.query(query, [email, pwd], (err, result) => {
+            if (err) {
+                res.status(500).send(err.message);
+            } else if (result.length === 0) {
+                res.send("Invalid ID or password.");
+            } else if (result[0].status === 1) {
+                res.send(result[0].utype);
+            } else {
+                res.send("You are blocked.");
+            }
+        });
     });
-});
 
 // Influencer dashboard route
 app.get("/influencer-dashboard", (req, res) => {

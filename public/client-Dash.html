@@ -148,17 +148,25 @@
                 </div>
                 <div class="modal-body">
                     <form ng-submit="updatePassword()">
-                        <div class="mb-3">
-                            <label for="currentPassword" class="form-label">Current Password</label>
-                            <input type="password" class="form-control" id="currentPassword" ng-model="passwordData.currentPassword" required />
+                        <div class="mb-3 input-group"> <label for="currentPassword" class="form-label visually-hidden">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" ng-model="passwordData.currentPassword" placeholder="Current Password" required />
+                            <span class="input-group-text password-toggle-icon" onclick="togglePasswordVisibility('currentPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
                         </div>
-                        <div class="mb-3">
-                            <label for="newPassword" class="form-label">New Password</label>
-                            <input type="password" class="form-control" id="newPassword" ng-model="passwordData.newPassword" required />
+                        <div class="mb-3 input-group">
+                            <label for="newPassword" class="form-label visually-hidden">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" ng-model="passwordData.newPassword" placeholder="New Password" required />
+                            <span class="input-group-text password-toggle-icon" onclick="togglePasswordVisibility('newPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
                         </div>
-                        <div class="mb-4">
-                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                            <input type="password" class="form-control" id="confirmPassword" ng-model="passwordData.confirmPassword" required />
+                        <div class="mb-4 input-group">
+                            <label for="confirmPassword" class="form-label visually-hidden">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" ng-model="passwordData.confirmPassword" placeholder="Confirm New Password" required />
+                            <span class="input-group-text password-toggle-icon" onclick="togglePasswordVisibility('confirmPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary" ng-disabled="updating">

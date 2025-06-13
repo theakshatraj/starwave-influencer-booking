@@ -6,6 +6,7 @@ app.controller('InfluencerController', function($scope, $window, $http) {
     $scope.inflEmail = localStorage.getItem('inflEmail') || 'influencer@example.com';
     
     // Initialize influencer name (you can set this from login or localStorage)
+    // This variable is used in the HTML: <h2>Welcome, {{ inflName || 'Influencer' }}!</h2>
     $scope.inflName = localStorage.getItem('inflName') || 'Influencer';
     
     // Password update data and state
@@ -54,7 +55,7 @@ app.controller('InfluencerController', function($scope, $window, $http) {
                     newPassword: '',
                     confirmPassword: ''
                 };
-                // Close the modal
+                // Close the modal (make sure jQuery is loaded before this)
                 $('#settingModal').modal('hide');
             } else {
                 // These are backend validation messages
@@ -65,7 +66,8 @@ app.controller('InfluencerController', function($scope, $window, $http) {
             // This catch block will primarily hit for network errors or unhandled 500s from the backend.
             // Backend sends plain text for 500 errors.
             console.error('Password update error:', error);
-            alert('Network error or server unavailable: ' + (error.data || error.statusText));
+            // Check if error.data exists and is a string for the alert
+            alert('Network error or server unavailable: ' + (error.data || error.statusText || 'Unknown error'));
         })
         .finally(function() {
             $scope.updating = false; // Hide loading spinner regardless of success or failure
@@ -75,7 +77,7 @@ app.controller('InfluencerController', function($scope, $window, $http) {
     // Function to log out the influencer
     $scope.logout = function () {
         localStorage.removeItem('inflEmail');
-        localStorage.removeItem('inflName');
+        localStorage.removeItem('inflName'); // Also clear the name on logout
         $window.location.href = 'index.html';
     };
 });
@@ -96,3 +98,19 @@ $(document).ready(function() {
         console.log('Event form submitted');
     });
 });
+
+
+function togglePasswordVisibility(fieldId, iconElement) {
+    const passwordField = document.getElementById(fieldId);
+    const icon = iconElement.querySelector('i'); 
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
