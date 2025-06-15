@@ -30,21 +30,21 @@ app.use(fileUploader());
 app.use("/uploads", express.static(path.join(__dirname, "./public/uploads")));
 
 // MySQL configuration
-const dbConfig = {
-    host: "127.0.0.1",
-    user: "root",
-    password: "A@82059raj",
-    database: "project",
-};
-
 // const dbConfig = {
-//     host: "bgtl8q0vhmgxdsvvcxxw-mysql.services.clever-cloud.com",
-//     user: "uksfiiksoxvz5fll",
-//     passkword: "e1aQmGi3nNS1Px9AAWTA",
-//     database: "bgtl8q0vhmgxdsvvcxxw",
-//     keepAliveInitialDelay: 10000,
-//     enableKeepAlive: true,
+//     host: "127.0.0.1",
+//     user: "root",
+//     password: "A@82059raj",
+//     database: "project",
 // };
+
+const dbConfig = {
+    host: "bgtl8q0vhmgxdsvvcxxw-mysql.services.clever-cloud.com",
+    user: "uksfiiksoxvz5fll",
+    password: "e1aQmGi3nNS1Px9AAWTA",
+    database: "bgtl8q0vhmgxdsvvcxxw",
+    keepAliveInitialDelay: 10000,
+    enableKeepAlive: true,
+};
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
