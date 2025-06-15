@@ -60,7 +60,7 @@ $(document).ready(function () {
                         localStorage.setItem("adminEmail", resp.email);
                         localStorage.setItem("userRole", resp.role); // Store the role for admin too
                         showCustomAlert("Success", resp.message);
-                        window.location.href = "admin-dashboard.html"; // Redirect to admin dashboard
+                        window.location.href = "admin-dash.html"; // Redirect to admin dashboard
                     } else {
                         showCustomAlert("Error", resp.message || "Admin login failed.");
                     }
