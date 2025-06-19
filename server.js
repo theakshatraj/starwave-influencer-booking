@@ -47,8 +47,8 @@ app.use("/uploads", express.static(path.join(__dirname, "./public/uploads")));
 //     enableKeepAlive: true,
 // };
 
-let dbConfig =
-  "mysql://avnadmin:AVNS_GAjVnJ3_iwc82Z87m4u@mysql-78551a5-aksh-787b.e.aivencloud.com:13616/defaultdb";
+let dbConfig = process.env.CLOUD_DB;
+  
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
