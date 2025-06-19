@@ -75,7 +75,7 @@ $(document).ready(function () {
                         localStorage.setItem("userRole", "Client"); // Store the role
                         showCustomAlert("Success", "Client login successful!");
                         window.location.href = "client-Dash.html";
-                    } else if (userType === "Influencer") { // Ensure case matches server response
+                    } else if (userType === "influencer") { // Ensure case matches server response
                         localStorage.setItem("inflEmail", email); // Store the email for influencer
                         localStorage.setItem("userRole", "Influencer"); // Store the role
                         showCustomAlert("Success", "Influencer login successful!");

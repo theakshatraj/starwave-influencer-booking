@@ -10,11 +10,24 @@ module.controller("myController", function ($scope, $http) {
     $scope.selectedInfluencer = {}; 
     $scope.searchName = ''; 
 
+    // Function to determine the correct image URL
+    $scope.getImageUrl = function(picPath) {
+        if (!picPath) {
+            return '/uploads/default-profile.jpg';
+        }
+        
+        // Check if it's already a full URL (Cloudinary)
+        if (picPath.startsWith('http://') || picPath.startsWith('https://')) {
+            return picPath;
+        }
+        
+        // If it's a relative path, prepend /uploads/
+        return '/uploads/' + picPath;
+    };
 
     // Initialize and fetch cities based on selected category on load
     $scope.init = function () {
         $scope.updateCities();
-      
     };
 
     // Updates the list of cities based on the selected category
@@ -53,7 +66,7 @@ module.controller("myController", function ($scope, $http) {
                 $scope.influencers = response.data; // Assume backend returns a list of influencer objects
                 
                 $scope.influencers.forEach(function (inf) {
-                    // console.log('Image path:', '/uploads/' + inf.pic); // Uncomment for debugging image paths
+                    console.log('Image path:', inf.pic); // Debug: check what pic value we're getting
                     inf.isSaved = false; // Default to not saved
                     inf.isSaving = false; // Default to not saving
                 });
