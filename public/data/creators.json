@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Priya Sharma",
+    "category": "fashion",
+    "image": "uploads/PriyaSharma.png",
+    "alt": "Priya Sharma"
+  },
+  {
+    "name": "Arjun Mehta",
+    "category": "travel",
+    "image": "uploads/Arjun.png",
+    "alt": "Arjun Mehta"
+  },
+  {
+    "name": "Kavya Tech",
+    "category": "tech",
+    "image": "uploads/Kavya.jpg",
+    "alt": "Kavya Tech"
+  },
+  {
+    "name": "Rohit Fitness",
+    "category": "fitness",
+    "image": "uploads/Rohit.webp",
+    "alt": "Rohit Fitness"
+  },
+  {
+    "name": "Anjali Cooks",
+    "category": "food",
+    "image": "uploads/Anjali.jpg",
+    "alt": "Anjali Cooks"
+  },
+  {
+    "name": "Siddharth Style",
+    "category": "lifestyle",
+    "image": "uploads/Siddarth.jpeg",
+    "alt": "Siddharth Style"
+  },
+  {
+    "name": "Neha Fashion",
+    "category": "fashion",
+    "image": "uploads/neha.png",
+    "alt": "Neha Fashion"
+  },
+  {
+    "name": "Wanderlust Raj",
+    "category": "travel",
+    "image": "uploads/Raj.webp",
+    "alt": "Wanderlust Raj"
+  }
+]

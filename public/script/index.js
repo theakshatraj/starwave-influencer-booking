@@ -109,6 +109,29 @@ $(document).ready(function () {
                 console.error("Login AJAX Error:", jqXHR.status, jqXHR.responseText, jqXHR);
             });
     });
+  function renderCreators(creators) {
+    const grid = $("#creators-grid");
+    grid.empty();
+    creators.forEach(function(c) {
+      const item = `
+      <div class="col-lg-3 col-md-4 col-sm-6 creator-item" data-category="${c.category}">
+        <div class="creator-card">
+          <div class="creator-image">
+            <img src="${c.image}" alt="${c.alt || c.name}" class="img-fluid" />
+          </div>
+          <div class="creator-info">
+            <h5 class="creator-name">${c.name}</h5>
+            <span class="creator-category">${c.category.charAt(0).toUpperCase() + c.category.slice(1)}</span>
+          </div>
+        </div>
+      </div>`;
+      grid.append(item);
+    });
+  }
+  $.getJSON("/data/creators.json").done(function(data){
+    renderCreators(data);
+    filterCreators("all");
+  });
   // --- Creator Filter Logic ---
 
   // Function to filter creators
@@ -151,11 +174,10 @@ $(document).ready(function () {
 
     // Update the active state on the filter buttons in the creators section
     $(".filter-btn").removeClass("active");
-    $(`.filter-btn[data-category="${category}"]`).addClass("active");
+  $(`.filter-btn[data-category="${category}"]`).addClass("active");
   });
 
-  // Initial filter when the page loads (show all creators by default)
-  filterCreators("all");
+  
 
   // --- Contact Form Submission Handler ---
   $("#contactForm").submit(function (event) {
@@ -196,7 +218,17 @@ $(document).ready(function () {
         // Re-enable button and restore original text regardless of success or failure
         $("#sendMessageBtn").prop("disabled", false).text("Send Message");
       });
-  });
+    });
+
+    $("#forgotPwdLink").click(function(){ $("#forgotPasswordModal").modal("show"); });
+    $("#forgotSubmitBtn").click(function(){
+        const email = $("#forgotEmail").val().trim();
+        if (!email) { alert("Enter email"); return; }
+        $.post("/auth/forgot-password", { email })
+            .done(function(resp){ alert(resp.message || "Reset link sent"); $("#forgotPasswordModal").modal("hide"); })
+            .fail(function(jq){ alert(jq.responseJSON && jq.responseJSON.message ? jq.responseJSON.message : "Failed to send reset link"); });
+    });
+    
 });
 
 // Custom Typewriter Function for Hero Section

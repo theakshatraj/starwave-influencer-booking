@@ -222,103 +222,7 @@
       <button class="filter-btn" data-category="lifestyle">Lifestyle</button>
     </div>
 
-    <div class="row" id="creators-grid">
-      <div class="col-lg-3 col-md-4 col-sm-6 creator-item" data-category="fashion">
-        <div class="creator-card">
-          <div class="creator-image">
-            <img src="uploads/PriyaSharma.png" alt="Priya Sharma" class="img-fluid" />
-          </div>
-          <div class="creator-info">
-            <h5 class="creator-name">Priya Sharma</h5>
-            <span class="creator-category">Fashion</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-3 col-md-4 col-sm-6 creator-item" data-category="travel">
-        <div class="creator-card">
-          <div class="creator-image">
-            <img src="uploads/Arjun.png" alt="Arjun Mehta" class="img-fluid" />
-          </div>
-          <div class="creator-info">
-            <h5 class="creator-name">Arjun Mehta</h5>
-            <span class="creator-category">Travel</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-3 col-md-4 col-sm-6 creator-item" data-category="tech">
-        <div class="creator-card">
-          <div class="creator-image">
-            <img src="uploads/Kavya.jpg" alt="Kavya Tech" class="img-fluid" />
-          </div>
-          <div class="creator-info">
-            <h5 class="creator-name">Kavya Tech</h5>
-            <span class="creator-category">Tech</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-3 col-md-4 col-sm-6 creator-item" data-category="fitness">
-        <div class="creator-card">
-          <div class="creator-image">
-            <img src="uploads/Rohit.webp" alt="Rohit Fitness" class="img-fluid" />
-          </div>
-          <div class="creator-info">
-            <h5 class="creator-name">Rohit Fitness</h5>
-            <span class="creator-category">Fitness</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-3 col-md-4 col-sm-6 creator-item" data-category="food">
-        <div class="creator-card">
-          <div class="creator-image">
-            <img src="uploads/Anjali.jpg" alt="Anjali Cooks" class="img-fluid" />
-          </div>
-          <div class="creator-info">
-            <h5 class="creator-name">Anjali Cooks</h5>
-            <span class="creator-category">Food</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-3 col-md-4 col-sm-6 creator-item" data-category="lifestyle">
-        <div class="creator-card">
-          <div class="creator-image">
-            <img src="uploads/Siddarth.jpeg" alt="Siddharth Style" class="img-fluid" />
-          </div>
-          <div class="creator-info">
-            <h5 class="creator-name">Siddharth Style</h5>
-            <span class="creator-category">Lifestyle</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-3 col-md-4 col-sm-6 creator-item" data-category="fashion">
-        <div class="creator-card">
-          <div class="creator-image">
-            <img src="uploads/neha.png" alt="Neha Fashion" class="img-fluid" />
-          </div>
-          <div class="creator-info">
-            <h5 class="creator-name">Neha Fashion</h5>
-            <span class="creator-category">Fashion</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-3 col-md-4 col-sm-6 creator-item" data-category="travel">
-        <div class="creator-card">
-          <div class="creator-image">
-            <img src="uploads/Raj.webp" alt="Wanderlust Raj" class="img-fluid" />
-          </div>
-          <div class="creator-info">
-            <h5 class="creator-name">Wanderlust Raj</h5>
-            <span class="creator-category">Travel</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="row" id="creators-grid"></div>
   </div>
 </section>
     <!-- OUR TEAM -->
@@ -330,21 +234,6 @@
     </div>
 
     <div class="row justify-content-center">
-      <div class="col-lg-4 col-md-6 mb-4">
-        <div class="team-member-card">
-          <div class="team-image-wrapper">
-            <img src="pics/rajesh.png" alt="Rajesh Bansal" class="team-photo" />
-          </div>
-          <h4 class="team-name">Rajesh Bansal</h4>
-          <p class="team-role">Mentor</p>
-          <div class="team-social-links">
-            <a href="https://www.linkedin.com/in/rajesh-bansal-8a87251a/" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-            <a href="https://x.com/banglorecompute" class="social-icon"><i class="fab fa-twitter"></i></a>
-            <a href="https://www.instagram.com/author_rajesh_bansal/" class="social-icon"><i class="fab fa-instagram"></i></a>
-          </div>
-        </div>
-      </div>
-
       <div class="col-lg-4 col-md-6 mb-4">
         <div class="team-member-card">
           <div class="team-image-wrapper">
@@ -573,18 +462,7 @@
                   <option value="influencer">Influencer/Creator</option>
                 </select>
               </div>
-              <div class="form-check mb-3">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="agreeTerms"
-                  required
-                />
-                <label class="form-check-label" for="agreeTerms">
-                  I agree to the <a href="#">Terms</a> and
-                  <a href="#">Privacy Policy</a>
-                </label>
-              </div>
+              
             </form>
           </div>
           <div class="modal-footer">
@@ -643,7 +521,7 @@
 </div>
             </form>
             <div class="text-center">
-              <a href="#" class="text-warning">Forgot your password?</a>
+              <a href="#" class="text-warning" id="forgotPwdLink">Forgot your password?</a>
             </div>
           </div>
           <div class="modal-footer">
@@ -662,5 +540,26 @@
       </div>
     </div>
     <script src="script/index.js"></script>
+
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Forgot Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <input type="email" class="form-control" id="forgotEmail" placeholder="Enter your email" required />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-warning" id="forgotSubmitBtn">Send Reset Link</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>

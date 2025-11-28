@@ -8,6 +8,7 @@ const fileUploader = require("express-fileupload");
 const path = require("path");
 const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
+const crypto = require("crypto");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -78,11 +79,79 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+mysql.query(
+  `CREATE TABLE IF NOT EXISTS password_resets (
+    email VARCHAR(255) NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    PRIMARY KEY (token)
+  )`,
+  (err) => {
+    if (err) {
+      console.error("Failed to ensure password_resets table:", err.message);
+    }
+  }
+);
+
+// Google auth removed
+
 // Routes
 
 // Home route
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// Google auth endpoints removed
+
+app.post("/auth/forgot-password", (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ status: "error", message: "Email is required." });
+  mysql.query("SELECT * FROM users WHERE email = ?", [email], (err, result) => {
+    if (err) return res.status(500).json({ status: "error", message: err.message });
+    if (result.length === 0) return res.status(404).json({ status: "error", message: "User not found." });
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    mysql.query(
+      "INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, ?)",
+      [email, token, expiresAt],
+      async (insErr) => {
+        if (insErr) return res.status(500).json({ status: "error", message: insErr.message });
+        const resetLink = `${req.protocol}://${req.get("host")}/reset.html?token=${token}`;
+        try {
+          await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Reset your StarWave password",
+            text: `Click the link to reset your password: ${resetLink}`,
+          });
+          res.json({ status: "success", message: "Reset link sent to email." });
+        } catch (mailErr) {
+          res.status(500).json({ status: "error", message: mailErr.message });
+        }
+      }
+    );
+  });
+});
+
+app.post("/auth/reset-password", (req, res) => {
+  const { token, newPwd } = req.body;
+  if (!token || !newPwd) return res.status(400).json({ status: "error", message: "Token and new password are required." });
+  mysql.query(
+    "SELECT * FROM password_resets WHERE token = ? AND expires_at > NOW()",
+    [token],
+    (err, result) => {
+      if (err) return res.status(500).json({ status: "error", message: err.message });
+      if (result.length === 0) return res.status(400).json({ status: "error", message: "Invalid or expired token." });
+      const email = result[0].email;
+      mysql.query("UPDATE users SET pwd = ? WHERE email = ?", [newPwd, email], (updErr) => {
+        if (updErr) return res.status(500).json({ status: "error", message: updErr.message });
+        mysql.query("DELETE FROM password_resets WHERE token = ?", [token], () => {
+          return res.json({ status: "success", message: "Password reset successful." });
+        });
+      });
+    }
+  );
 });
 
 // Signup process
